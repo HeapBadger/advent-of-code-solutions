@@ -1,6 +1,7 @@
 # Advent of Code Challenges
 
-![Build Status](https://img.shields.io/github/workflow/status/<your-username>/<your-repository>/ci?label=build)
+![Build Status](https://img.shields.io/github/workflow/status/h3r0toz3r0/adventofcode/ci?label=build)
+
 ![Advent of Code Progress](https://img.shields.io/badge/completion-0%2F24-green)
 
 This repository contains my solutions to the Advent of Code challenges. Each year has its own directory, organized to follow best coding practices for the respective programming language used for that year's solutions.
