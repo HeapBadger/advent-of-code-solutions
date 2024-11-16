@@ -1,4 +1,4 @@
-name: Track Advent of Code Progress
+name: Track Progress
 
 on:
   push:
@@ -57,6 +57,10 @@ jobs:
           # Commit and push the updated progress badge file if there is a change
           git config --local user.name "GitHub Actions"
           git config --local user.email "actions@github.com"
+          
+          # Use PAT for authentication
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/h3r0toz3r0/adventofcode.git
+          
           git add progress_badge_url.txt
           git commit -m "Update progress badge"
           git push
