@@ -1,6 +1,6 @@
 # Advent of Code Challenges
 
-![Build Status](https://img.shields.io/github/workflow/status/h3r0toz3r0/adventofcode/ci?label=build)
+![Build Status](https://img.shields.io/github/workflows/status/h3r0toz3r0/adventofcode/ci?label=build)
 
 ![Advent of Code Progress](https://img.shields.io/badge/completion-0%2F24-green)
 
