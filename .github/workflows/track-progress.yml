@@ -1,0 +1,62 @@
+name: Track Advent of Code Progress
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *'  # Run once a day to track progress
+
+jobs:
+  track-progress:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Get current day of Advent of Code
+        id: get-day
+        run: |
+          # Assume you store the current day in a file `completed_days.txt` with a number representing the completed days
+          if [ -f completed_days.txt ]; then
+            completed_days=$(cat completed_days.txt)
+          else
+            completed_days=0
+          fi
+          echo "Current day completed: $completed_days"
+          echo "::set-output name=completed_days::$completed_days"
+
+      - name: Generate Progress Badge
+        id: progress-badge
+        run: |
+          # Calculate percentage (out of 24)
+          completed_days=${{ steps.get-day.outputs.completed_days }}
+          total_days=24
+          percentage=$((completed_days * 100 / total_days))
+
+          # Set color based on progress
+          if [ $percentage -lt 50 ]; then
+            color="#ff0000"  # Red
+          elif [ $percentage -lt 75 ]; then
+            color="#ff9900"  # Orange
+          else
+            color="#00cc00"  # Green
+          fi
+
+          # Generate badge URL for GitHub Actions
+          badge_url="https://github.com/h3r0toz3r0/adventofcode/actions/workflows/ci.yml/badge.svg?label=Progress&message=${completed_days}%20of%2024%20days&color=${color}"
+
+          echo "Progress badge URL: $badge_url"
+
+          # Optionally, save to a file for future reference (if desired)
+          echo "$badge_url" > progress_badge_url.txt
+
+      - name: Commit Progress Badge URL
+        run: |
+          # Commit and push the updated progress badge file if there is a change
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "actions@github.com"
+          git add progress_badge_url.txt
+          git commit -m "Update progress badge"
+          git push
