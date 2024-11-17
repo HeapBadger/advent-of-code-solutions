@@ -10,7 +10,7 @@ The repository is organized as follows:
 
 ```
 adventofcode/
-|- 2024/                        # Year directory
+|- advent-of-code-2024/         # Year directory
   |- src/                       # Source files for solutions
   |- include/                   # Header files
   |- tests/                     # Unit tests for solutions
@@ -18,6 +18,8 @@ adventofcode/
 ```
 
 ## Usage
+
+Start by running the `setup.sh` script to install all dependencies for this repository.
 
 Navigate to the directory for the specific year to access the solutions and usage instructions.
 
