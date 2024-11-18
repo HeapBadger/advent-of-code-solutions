@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "day_1.h"
+#include "day_0.h"
 
 /**
  * @file main.c
@@ -53,16 +53,16 @@ void run_day(DayChallenge challenge) {
 
   // check and run the example file if it exists
   if (access(example_file, F_OK) == 0) {
-    printf("Found example file: %s. Running...\n", example_file);
-    challenge.day_function(example_file);
+    printf("Found example file: %s. Running...", example_file);
+    printf("\tSolution: %d\n", challenge.day_function(example_file));
   } else {
     printf("Example file not found: %s\n", example_file);
   }
 
   // check and run the actual file if it exists
   if (access(actual_file, F_OK) == 0) {
-    printf("Found actual file: %s. Running...\n", actual_file);
-    challenge.day_function(actual_file);
+    printf("Found actual file: %s. Running...", actual_file);
+    printf("\tSolution: %d\n", challenge.day_function(actual_file));
   } else {
     printf("Actual file not found: %s\n", actual_file);
   }
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 
   // array of all available challenges
   DayChallenge challenges[] = {
-      {"day_1", day_1, 1},
+      {"day_0", day_0, 0},
       // Add more days here
   };
 
