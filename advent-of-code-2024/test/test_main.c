@@ -69,9 +69,8 @@ static void test_zero(void) {
   int expected_result[] = {142, 281};
   int actual_result[] = {0, 0};
 
-  CU_ASSERT_EQUAL(day_0("data/example_0.txt", actual_result), 0);
-  CU_ASSERT_EQUAL(actual_result[0], expected_result[0]);
-  CU_ASSERT_EQUAL(actual_result[1], expected_result[1]);
-
+  CU_ASSERT_EQUAL_FATAL(day_0("data/example_0.txt", actual_result), 0);
+  CU_ASSERT_EQUAL_FATAL(actual_result[0], expected_result[0]);
+  CU_ASSERT_EQUAL_FATAL(actual_result[1], expected_result[1]);
   return;
 }
