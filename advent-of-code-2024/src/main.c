@@ -1,10 +1,10 @@
+#include "aux.h"
+#include "day_0.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#include "day_0.h"
 
 /**
  * @file main.c
@@ -23,7 +23,7 @@
  */
 typedef struct {
   const char *day_name;
-  int (*day_function)(const char *file_path);
+  int (*day_function)(const char *file_path, int result[]);
   int day_number;
 } DayChallenge;
 
@@ -40,10 +40,11 @@ typedef struct {
  * function, and day number.
  */
 void run_day(DayChallenge challenge) {
-  printf("Running %s challenge...\n", challenge.day_name);
+  printf("\nRunning %s challenge...\n", challenge.day_name);
 
   char example_file[MAX_FILE_PATH_LEN];
   char actual_file[MAX_FILE_PATH_LEN];
+  int result_array[] = {0, 0};
 
   // construct file paths using the day number
   snprintf(example_file, sizeof(example_file), "data/example_%d.txt",
@@ -53,18 +54,22 @@ void run_day(DayChallenge challenge) {
 
   // check and run the example file if it exists
   if (access(example_file, F_OK) == 0) {
-    printf("Found example file: %s. Running...", example_file);
-    printf("\tSolution: %d\n", challenge.day_function(example_file));
+    printf("\tFound example file: %s. Running...\n", example_file);
+    challenge.day_function(example_file, result_array);
+    printf("\tPart One: %d\n\tPart Two: %d\n\n", result_array[0],
+           result_array[1]);
   } else {
-    printf("Example file not found: %s\n", example_file);
+    ERROR_LOG("example file not found");
   }
 
   // check and run the actual file if it exists
   if (access(actual_file, F_OK) == 0) {
-    printf("Found actual file: %s. Running...", actual_file);
-    printf("\tSolution: %d\n", challenge.day_function(actual_file));
+    printf("\tFound actual file: %s. Running...\n", actual_file);
+    challenge.day_function(actual_file, result_array);
+    printf("\tPart One: %d\n\tPart Two: %d\n\n", result_array[0],
+           result_array[1]);
   } else {
-    printf("Actual file not found: %s\n", actual_file);
+    ERROR_LOG("actual file not found");
   }
 
   return;
@@ -93,7 +98,7 @@ int main(int argc, char *argv[]) {
   // array of all available challenges
   DayChallenge challenges[] = {
       {"day_0", day_0, 0},
-      // Add more days here
+      // add additional days here as needed
   };
 
   size_t challenge_count = sizeof(challenges) / sizeof(challenges[0]);
@@ -111,6 +116,7 @@ int main(int argc, char *argv[]) {
 
   // print useage guide (too many arguments handed)
   else if (ARGS_COUNT < argc) {
+    ERROR_LOG("invalid argument");
     printf("%s\n", USAGE_GUIDE);
   }
 
@@ -129,7 +135,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (!found) {
-      printf("Invalid argument: %s\n", requested_chal);
+      ERROR_LOG("invalid argument");
       printf("%s\n", USAGE_GUIDE);
     }
   }

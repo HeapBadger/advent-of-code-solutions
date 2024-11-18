@@ -67,6 +67,8 @@ To remove compiled files and reset the build directory:
 make clean
 ```
 
+Note: `day_0` added into code. This is an example from a previous Advent of Code challenge to help format the repo.
+
 ### Testing
 
 The project includes a basic testing suite to validate solutions against example inputs:

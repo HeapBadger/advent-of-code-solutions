@@ -6,7 +6,7 @@ TEST_DIR = test
 OBJ_DIR = obj
 BIN_DIR = bin
 CFLAGS = -Wall -Wextra -pedantic -std=c99 -I$(INCLUDE_DIR)
-LDFLAGS =
+LDFLAGS = -lcunit
 FORMAT = clang-format-15
 TIDY = clang-tidy $(addprefix --extra-arg=,$(subst -I,-I ,$(CFLAGS)))
 
@@ -35,7 +35,7 @@ $(OBJ_DIR)/%.o: $(TEST_DIR)/%.c
 
 # Compile test_main.c into an object file (for the test executable)
 $(OBJ_DIR)/test_main.o: $(TEST_DIR)/test_main.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ $(LDFLAGS)
 
 # Link object files into the main executable
 $(BIN_DIR)/$(EXEC): $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
@@ -54,7 +54,7 @@ format:
 	$(FORMAT) -i $(SRC_DIR)/*.c $(INCLUDE_DIR)/*.h $(TEST_DIR)/*.c
 
 # Run tests (compile and execute the test runner)
-test: $(BIN_DIR)/$(TEST_EXEC)
+test: all $(BIN_DIR)/$(TEST_EXEC)
 	./$(BIN_DIR)/$(TEST_EXEC)
 
 # Run tests with Valgrind

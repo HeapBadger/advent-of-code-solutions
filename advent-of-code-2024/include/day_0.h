@@ -19,9 +19,9 @@
  * @brief Challenge solution for day_0.
  *
  * @param filename Input filename.
- * @param result 
- * @return Final sum.
+ * @param result Solution to part 1 and 2.
+ * @return Exit status.
  */
-void day_0(const char *filename, int result[2]);
+int day_0(const char *filename, int result[2]);
 
 #endif // DAY0_H
