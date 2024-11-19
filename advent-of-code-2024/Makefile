@@ -61,12 +61,16 @@ test: all $(BIN_DIR)/$(TEST_EXEC)
 valgrind: $(BIN_DIR)/$(TEST_EXEC)
 	valgrind --leak-check=full ./$(BIN_DIR)/$(TEST_EXEC)
 
-# Run the adventofcode program (either all challenges or a specific day)
+# Run the adventofcode program with specified arguments
 run: $(BIN_DIR)/$(EXEC)
-	@./$(BIN_DIR)/$(EXEC) $(ARGS)
+	@./$(BIN_DIR)/$(EXEC) $(RUN_ARGS)
 
-# Clean up any specified arguments and pass them to the binary
-ARGS = $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
+# Filter out the target name and pass remaining arguments as RUN_ARGS
+RUN_ARGS = $(filter-out $@,$(MAKECMDGOALS))
+
+# Avoid treating arguments as make targets
+%:
+	@:
 
 # Clean up build artifacts
 clean:

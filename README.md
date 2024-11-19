@@ -19,8 +19,6 @@ adventofcode/
 
 ## Usage
 
-Start by running the `setup.sh` script to install all dependencies for this repository.
-
 Navigate to the directory for the specific year to access the solutions and usage instructions.
 
 Each year also contains its own set of unit tests, which are automatically run in GitHub's runner.

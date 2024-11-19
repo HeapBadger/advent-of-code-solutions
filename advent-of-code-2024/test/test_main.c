@@ -28,11 +28,6 @@ int main(void) {
   int retval;
   CU_basic_set_mode(CU_BRM_VERBOSE);
 
-  // exit failure if any test fails (for pipeline)
-  if (0 < CU_get_number_of_failures()) {
-    exit(EXIT_FAILURE);
-  }
-
   // initialize CUnit registry
   retval = CU_initialize_registry();
 
@@ -63,6 +58,11 @@ int main(void) {
   if (CUE_SUCCESS != retval) {
     ERROR_LOG("failed to run test suites");
     goto CLEANUP;
+  }
+
+  // exit failure if any test fails (for pipeline)
+  if (0 < CU_get_number_of_failures()) {
+    exit(EXIT_FAILURE);
   }
 
 CLEANUP:

@@ -39,7 +39,8 @@ typedef struct {
  * @param challenge A `DayChallenge` structure containing the day name,
  * function, and day number.
  */
-void run_day(DayChallenge challenge) {
+int run_day(DayChallenge challenge) {
+  int exit_status;
   printf("\nRunning %s challenge...\n", challenge.day_name);
 
   char example_file[MAX_FILE_PATH_LEN];
@@ -55,24 +56,33 @@ void run_day(DayChallenge challenge) {
   // check and run the example file if it exists
   if (access(example_file, F_OK) == 0) {
     printf("\tFound example file: %s. Running...\n", example_file);
-    challenge.day_function(example_file, result_array);
-    printf("\tPart One: %d\n\tPart Two: %d\n\n", result_array[0],
-           result_array[1]);
+    exit_status = challenge.day_function(example_file, result_array);
   } else {
     ERROR_LOG("example file not found");
   }
 
-  // check and run the actual file if it exists
-  if (access(actual_file, F_OK) == 0) {
-    printf("\tFound actual file: %s. Running...\n", actual_file);
-    challenge.day_function(actual_file, result_array);
+  if (EXIT_SUCCESS == exit_status) {
     printf("\tPart One: %d\n\tPart Two: %d\n\n", result_array[0],
            result_array[1]);
+  }
+
+  // check and run the actual file if it exists
+  result_array[0] = 0;
+  result_array[1] = 0;
+
+  if (access(actual_file, F_OK) == 0) {
+    printf("\tFound actual file: %s. Running...\n", actual_file);
+    exit_status = challenge.day_function(actual_file, result_array);
   } else {
     ERROR_LOG("actual file not found");
   }
 
-  return;
+  if (EXIT_SUCCESS == exit_status) {
+    printf("\tPart One: %d\n\tPart Two: %d\n\n", result_array[0],
+           result_array[1]);
+  }
+
+  return exit_status;
 }
 
 /**
@@ -93,7 +103,7 @@ void run_day(DayChallenge challenge) {
  * otherwise.
  */
 int main(int argc, char *argv[]) {
-  int exit_status = EXIT_FAILURE;
+  int exit_status = EXIT_SUCCESS;
 
   // array of all available challenges
   DayChallenge challenges[] = {
@@ -108,10 +118,12 @@ int main(int argc, char *argv[]) {
     printf("Running all Advent of Code challenges...\n");
 
     for (size_t i = 0; i < challenge_count; i++) {
-      run_day(challenges[i]);
-    }
+      exit_status = run_day(challenges[i]);
 
-    exit_status = EXIT_SUCCESS;
+      if (EXIT_FAILURE == exit_status) {
+        break;
+      }
+    }
   }
 
   // print useage guide (too many arguments handed)
@@ -127,9 +139,8 @@ int main(int argc, char *argv[]) {
 
     for (size_t i = 0; i < challenge_count; i++) {
       if (0 == strcmp(requested_chal, challenges[i].day_name)) {
-        run_day(challenges[i]);
+        exit_status = run_day(challenges[i]);
         found = true;
-        exit_status = EXIT_SUCCESS;
         break;
       }
     }
