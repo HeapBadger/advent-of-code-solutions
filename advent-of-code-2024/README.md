@@ -2,7 +2,7 @@
 
 ## Overview
 
-This directory contains solutions for Advent of Code 2024, implemented in C. Each day's challenge is tackled with a focus on performance and clean coding practices.
+This directory contains solutions for Advent of Code 2024, implemented in C.
 
 ## Table of Contents
 
