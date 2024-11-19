@@ -88,7 +88,6 @@ static int calibration_one(const char *line) {
 
   // convert the character array into an integer
   return (calibrated_digit[0] - '0') * 10 + (calibrated_digit[1] - '0');
-
 }
 
 /**
@@ -120,5 +119,4 @@ static int calibration_two(const char *line) {
 
   // convert the character array into an integer
   return (calibrated_digit[0] - '0') * 10 + (calibrated_digit[1] - '0');
-  
 }
