@@ -73,16 +73,11 @@ Note: `day_0` added into code. This is an example from a previous Advent of Code
 
 The project includes a basic testing suite to validate solutions against example inputs:
 
-- Run all tests:
 ```sh
 make test
 ```
-- Run test for a specific day (e.g. Day 1):
-```sh
-make test day_1
-```
 
-Unit tests are automatically executed on each push to the main branch via GitHub Actions.
+Unit tests are automatically executed on each push to the main branch via GitHub Actions.  The unittests are setup to give a pipeline fail if any unittest does not pass.
 
 ## Known Issues/Bugs
 
