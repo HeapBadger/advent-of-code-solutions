@@ -38,6 +38,8 @@ typedef struct {
  *
  * @param challenge A `DayChallenge` structure containing the day name,
  * function, and day number.
+ *
+ * @return Status code from challenge.
  */
 int run_day(DayChallenge challenge) {
   int exit_status;

@@ -61,6 +61,10 @@ test: all $(BIN_DIR)/$(TEST_EXEC)
 valgrind: $(BIN_DIR)/$(TEST_EXEC)
 	valgrind --leak-check=full ./$(BIN_DIR)/$(TEST_EXEC)
 
+# Clean up build artifacts
+clean:
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
+
 # Run the adventofcode program with specified arguments
 run: $(BIN_DIR)/$(EXEC)
 	@./$(BIN_DIR)/$(EXEC) $(RUN_ARGS)
@@ -71,9 +75,5 @@ RUN_ARGS = $(filter-out $@,$(MAKECMDGOALS))
 # Avoid treating arguments as make targets
 %:
 	@:
-
-# Clean up build artifacts
-clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
 
 .PHONY: all tidy format test clean valgrind run

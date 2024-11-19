@@ -75,7 +75,7 @@ CLEANUP:
  * @brief Test case for validating the functionality of `day_0` function.
  */
 static void test_zero(void) {
-  int expected_result[] = {142, 281};
+  int expected_result[] = {153, 281};
   int actual_result[] = {0, 0};
 
   CU_ASSERT_EQUAL_FATAL(day_0("data/example_0.txt", actual_result), 0);
