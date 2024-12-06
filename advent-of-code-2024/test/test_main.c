@@ -1,5 +1,5 @@
 #include "aux.h"
-#include "day_0.h"
+#include "day_1.h"
 
 #include <CUnit/Basic.h>
 #include <stdio.h>
@@ -9,77 +9,69 @@
  * @file test_main.c
  * @brief Entry point for running unit tests using the CUnit testing framework.
  *
- * This file initializes the CUnit registry, sets up test suites and test cases,
- * and executes all registered tests.
+ * This file sets up the CUnit testing framework, including test registry
+ * initialization, suite and test case registration, and the execution of all
+ * registered tests. It ensures that errors are logged appropriately and 
+ * terminates the test run if any setup or execution fails.
  */
 
-static void test_zero(void);
+/* Function prototypes */
+static void test_one(void);
 
 /**
- * @brief Main function for setting up and executing CUnit tests.
+ * @brief Main function to initialize and execute CUnit tests.
  *
- * The function initializes the CUnit registry, creates test suites, registers
- * test cases, and runs all tests. It uses the `ERROR_LOG` macro for error
- * reporting.
- *
- * @return 0 on success, non-zero error code on failure.
+ * @return 0 on success, or a non-zero error code on failure.
  */
 int main(void) {
-  int retval;
-  CU_basic_set_mode(CU_BRM_VERBOSE);
+    int retval;
+    CU_basic_set_mode(CU_BRM_VERBOSE);
 
-  // initialize CUnit registry
-  retval = CU_initialize_registry();
+    retval = CU_initialize_registry();
+    if (CUE_SUCCESS != retval) {
+        ERROR_LOG("Failed to initialize CUnit registry");
+        goto CLEANUP;
+    }
 
-  if (CUE_SUCCESS != retval) {
-    ERROR_LOG("failed to initialize CUnit registry");
-    goto CLEANUP;
-  }
+    CU_pSuite suite = CU_add_suite("Testing Suite", NULL, NULL);
+    if (NULL == suite) {
+        ERROR_LOG("Failed to create CUnit test suite");
+        goto CLEANUP;
+    }
 
-  // create a test suite
-  CU_pSuite suite = NULL;
-  suite = CU_add_suite("testing-suite", 0, 0);
+    // Add test cases to the suite as needed
+    if (NULL == CU_add_test(suite, "test_one", test_one)) {
+        ERROR_LOG("Failed to add test_one to suite");
+    }
 
-  if (NULL == suite) {
-    ERROR_LOG("failed to create CUnit test suite");
-    goto CLEANUP;
-  }
+    retval = CU_basic_run_tests();
+    if (CUE_SUCCESS != retval) {
+        ERROR_LOG("Failed to run test suites");
+        goto CLEANUP;
+    }
 
-  // add test cases to the suite
-  if (NULL == (CU_add_test(suite, "test_zero", test_zero))) {
-    ERROR_LOG("failed to add test_zero to suite");
-  }
-
-  // add additional tests here as needed.
-
-  // run all tests in the registry
-  retval = CU_basic_run_tests();
-
-  if (CUE_SUCCESS != retval) {
-    ERROR_LOG("failed to run test suites");
-    goto CLEANUP;
-  }
-
-  // exit failure if any test fails (for pipeline)
-  if (0 < CU_get_number_of_failures()) {
-    exit(EXIT_FAILURE);
-  }
+    if (CU_get_number_of_failures() > 0) {
+        exit(EXIT_FAILURE);
+    }
 
 CLEANUP:
-  // clean up the CUnit registry
-  CU_cleanup_registry();
-  return retval;
+    CU_cleanup_registry();
+    return retval;
 }
 
 /**
- * @brief Test case for validating the functionality of `day_0` function.
+ * @brief Test case for validating the functionality of the `day_1` function.
+ *
+ * This test case validates the expected results of the `day_1` function when
+ * provided with a known input file. It compares the actual output with the
+ * expected values using CUnit assertions.
  */
-static void test_zero(void) {
-  int expected_result[] = {153, 281};
-  int actual_result[] = {0, 0};
+static void test_one(void) {
+    int expected_result[] = {11, 31}; /**< Expected results for comparison */
+    int actual_result[] = {0, 0};     /**< Array to store actual results */
 
-  CU_ASSERT_EQUAL_FATAL(day_0("data/example_0.txt", actual_result), 0);
-  CU_ASSERT_EQUAL_FATAL(actual_result[0], expected_result[0]);
-  CU_ASSERT_EQUAL_FATAL(actual_result[1], expected_result[1]);
-  return;
+    /* Call the day_1 function and validate the results */
+    CU_ASSERT_EQUAL_FATAL(day_1("data/example_1.txt", actual_result), 0);
+    CU_ASSERT_EQUAL_FATAL(actual_result[0], expected_result[0]);
+    CU_ASSERT_EQUAL_FATAL(actual_result[1], expected_result[1]);
 }

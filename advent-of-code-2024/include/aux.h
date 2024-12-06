@@ -12,26 +12,9 @@
 
 #include <stdio.h>
 
-/**
- * @def ERROR_LOG(msg)
- * @brief Logs an error message with a standard format.
- *
- * This macro is used to print error messages to the standard output.
- * It prepends the message with a consistent `[!] ERROR: ` prefix for clarity.
- *
- * Example usage:
- * @code
- * ERROR_LOG("unable to open file");
- * @endcode
- *
- * Output:
- * @code
- * [!] ERROR: unable to open file
- * @endcode
- *
- * @param msg A string literal or a null-terminated string containing the error
- * message.
- */
-#define ERROR_LOG(msg) printf("[!] ERROR: %s\n", msg)
+#define ERROR_LOG(msg)                                                         \
+  do {                                                                         \
+    fprintf(stderr, "%s\n", msg);                                              \
+  } while (0)
 
 #endif // AUX_H
