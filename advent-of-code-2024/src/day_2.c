@@ -196,18 +196,20 @@ b_is_stable (int *record, int size)
 }
 
 /**
- * @brief Checks the stability of a sequence of integers, allowing one element to be removed.
+ * @brief Checks the stability of a sequence of integers, allowing one element
+ * to be removed.
  *
- * This function first checks if the sequence is stable without modification. If the sequence
- * is not stable, it attempts to remove one element at a time and checks if the resulting sequence
- * becomes stable. A sequence is stable if the absolute difference between any two consecutive 
- * integers is between 1 and 3 (inclusive), and the sequence does not change direction (i.e., it either 
- * only increases or only decreases).
+ * This function first checks if the sequence is stable without modification. If
+ * the sequence is not stable, it attempts to remove one element at a time and
+ * checks if the resulting sequence becomes stable. A sequence is stable if the
+ * absolute difference between any two consecutive integers is between 1 and 3
+ * (inclusive), and the sequence does not change direction (i.e., it either only
+ * increases or only decreases).
  *
  * @param record Pointer to an array of integers representing the sequence.
  * @param size The size of the array.
- * @return `true` if the sequence is stable (either initially or after removing one element), 
- *         `false` otherwise.
+ * @return `true` if the sequence is stable (either initially or after removing
+ * one element), `false` otherwise.
  */
 
 bool

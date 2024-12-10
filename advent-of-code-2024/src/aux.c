@@ -18,7 +18,6 @@ array_initialization (void)
     {
         ERROR_LOG("Failed to allocate memory for Array");
         goto EXIT;
-        return NULL;
     }
 
     array->idx  = 0;

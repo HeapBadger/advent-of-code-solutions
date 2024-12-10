@@ -1,6 +1,8 @@
 #include "aux.h"
 #include "day_1.h"
 #include "day_2.h"
+#include "day_3.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,9 +17,8 @@
  * command-line arguments.
  */
 
-#define USAGE_GUIDE       "Usage: ./adventofcode [<day_1|day_2|...>]"
-#define MAX_FILE_PATH_LEN 256
-#define ARGS_COUNT        2
+#define USAGE_GUIDE "Usage: ./adventofcode [<day_1|day_2|...>]"
+#define ARGS_COUNT  2
 
 /**
  * @brief Structure to map day names to their respective functions.
@@ -49,8 +50,8 @@ run_day (DayChallenge challenge)
     int exit_status;
     printf("\nRunning %s challenge...\n", challenge.day_name);
 
-    char example_file[MAX_FILE_PATH_LEN];
-    char actual_file[MAX_FILE_PATH_LEN];
+    char example_file[BUFFER_SIZE];
+    char actual_file[BUFFER_SIZE];
     int  result_array[2] = {
         0, 0
     }; // Initialize result array to zero to avoid uninitialized access
@@ -135,7 +136,7 @@ main (int argc, char *argv[])
 
     // array of all available challenges
     DayChallenge challenges[] = {
-        { "day_1", day_1, 1 }, { "day_2", day_2, 2 },
+        { "day_1", day_1, 1 }, { "day_2", day_2, 2 }, { "day_3", day_3, 3 },
         // add additional days here as needed
     };
 
