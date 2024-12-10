@@ -35,9 +35,9 @@
 /**
  * @brief Challenge solution for day_1.
  *
- * @param filename Input filename.
- * @param result Solution to part 1 and 2.
- * @return Exit status.
+ * @param filename Path to the input file.
+ * @param result Array to store the results (size 2).
+ * @return int EXIT_SUCCESS on success, otherwise EXIT_FAILURE.
  */
 int day_1(const char *filename, int result[2]);
 

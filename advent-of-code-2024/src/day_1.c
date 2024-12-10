@@ -7,139 +7,101 @@
 
 /**
  * @file day_1.c
- * @brief Implementation of the day_1 challenge.
- *
- * Provides functions for processing integer pairs from a file
- * and storing them in dynamically resizable arrays.
+ * @brief Implementation of the Day 1 challenge.
  */
-
-/* Macros */
-#define BUFFER_SIZE (256)      ///< Maximum line size for file input.
-#define INITIAL_LIST_SIZE (10) ///< Initial size of the arrays.
-#define ELE_DNE (-1)           ///< Marker for an empty array element.
-
-/**
- * @brief Structure to hold organized arrays of integers.
- */
-typedef struct {
-  int max_size;  ///< Maximum size of the arrays.
-  int curr_idx;  ///< Current index for inserting elements.
-  int *list_one; ///< First array of integers.
-  int *list_two; ///< Second array of integers.
-} SortedArrays;
 
 /* Function Prototypes */
-void bubble_sort(int numbers[], int size);
 static int similarity_score(int num, const int *array, int size);
 static int extract_digits(const char *line, int digits[2]);
-static SortedArrays *sortedarrays_initialize(void);
-static void sortedarrays_destroy(SortedArrays *array);
-static int sortedarrays_add(SortedArrays *array, const int elements[2]);
-static int sortedarrays_resize(SortedArrays *array);
 
-/**
- * @brief Processes the file and extracts integer pairs.
- *
- * @param filename Path to the input file.
- * @param result Array to store the results.
- * @return int EXIT_SUCCESS on success, otherwise EXIT_FAILURE.
- */
-int day_1(const char *filename, int result[2]) {
-  FILE *fp = NULL;
-  SortedArrays *array = NULL;
-  char line[BUFFER_SIZE] = {0};
-  int sum = 0;
+int
+day_1 (const char *filename, int result[2])
+{
+    int    return_status = EXIT_FAILURE;
+    Array *array_one     = NULL;
+    Array *array_two     = NULL;
+    FILE  *fp            = NULL;
 
-  if ((filename == NULL) || (result == NULL)) {
-    ERROR_LOG("Invalid input to day_1");
-    return EXIT_FAILURE;
-  }
+    if ((filename == NULL) || (result == NULL))
+    {
+        ERROR_LOG("Invalid input to day_1");
+        goto EXIT;
+    }
 
-  fp = fopen(filename, "r");
-  if (fp == NULL) {
-    ERROR_LOG("Unable to open file");
-    return EXIT_FAILURE;
-  }
+    fp = fopen(filename, "r");
 
-  array = sortedarrays_initialize();
-  if (array == NULL) {
+    if (fp == NULL)
+    {
+        ERROR_LOG("Unable to open file");
+        goto EXIT;
+    }
+
+    array_one = array_initialization();
+
+    if (array_one == NULL)
+    {
+        ERROR_LOG("Unable to initialize array_one");
+        goto EXIT;
+    }
+
+    array_two = array_initialization();
+
+    if (array_two == NULL)
+    {
+        ERROR_LOG("Unable to initialize array_two");
+        goto EXIT;
+    }
+
+    char line[BUFFER_SIZE] = { 0 };
+
+    while (fgets(line, sizeof(line), fp) != NULL)
+    {
+        int digits[2] = { DNE, DNE };
+
+        if (extract_digits(line, digits) == EXIT_SUCCESS)
+        {
+            array_add(array_one, digits[0]);
+            array_add(array_two, digits[1]);
+        }
+    }
+
     fclose(fp);
-    return EXIT_FAILURE;
-  }
+    fp = NULL;
 
-  while (fgets(line, sizeof(line), fp) != NULL) {
-    int digits[2] = {ELE_DNE, ELE_DNE};
-    if (extract_digits(line, digits) == EXIT_SUCCESS) {
-      if (sortedarrays_add(array, digits) == EXIT_FAILURE) {
-        ERROR_LOG("Failed to add elements to array");
-        break;
-      }
+    // Part 1: Compute sum of absolute differences
+    bubble_sort(array_one->list, array_one->idx);
+    bubble_sort(array_two->list, array_two->idx);
+
+    int sum = 0;
+
+    for (int idx = 0; idx < array_one->idx; idx++)
+    {
+        sum += abs(array_one->list[idx] - array_two->list[idx]);
     }
-  }
 
-  fclose(fp);
+    result[0] = sum;
 
-  // Part One
-  bubble_sort(array->list_one, array->curr_idx);
-  bubble_sort(array->list_two, array->curr_idx);
+    // Part 2: Compute similarity scores
+    sum = 0;
 
-  for (int idx = 0; idx < array->curr_idx; idx++) {
-    sum += abs(array->list_one[idx] - array->list_two[idx]);
-  }
-
-  result[0] = sum;
-
-  // Part Two
-  sum = 0;
-
-  for (int idx = 0; idx < array->max_size; idx++) {
-    sum += similarity_score(array->list_one[idx], array->list_two,
-                            array->max_size);
-  }
-
-  result[1] = sum;
-
-  sortedarrays_destroy(array);
-
-  return EXIT_SUCCESS;
-}
-
-/**
- * @brief Calculates a similarity score for a given integer.
- *
- * The score is calculated as the product of the integer (`num`) and its
- * frequency in the array (`array`). The array must be sorted in ascending order
- * and contain only non-negative integers. Elements with the value `ELE_DNE` are
- * skipped during the calculation.
- *
- * @param num The integer for which the similarity score is calculated. Must be
- * non-negative.
- * @param array Pointer to an array of integers. Must be sorted in ascending
- * order and contain only non-negative integers.
- * @param size The size of the array. Must be non-negative.
- *
- * @return The similarity score if successful, or 0 if the integer is not found
- * or the input parameters are invalid.
- */
-static int similarity_score(int num, const int *array, int size) {
-  int idx;
-  int count = 0;
-
-  if (num < 0 || array == NULL || size < 0) {
-    return 0;
-  }
-
-  for (idx = 0; idx < size; idx++) {
-    if (array[idx] == ELE_DNE) {
-      continue;
-    } else if (array[idx] > num) {
-      break;
-    } else if (array[idx] == num) {
-      count++;
+    for (int idx = 0; idx < array_one->idx; idx++)
+    {
+        sum += similarity_score(
+            array_one->list[idx], array_two->list, array_two->idx);
     }
-  }
 
-  return count * num;
+    result[1] = sum;
+
+EXIT:
+    if (NULL != fp)
+    {
+        fclose(fp);
+        fp = NULL;
+    }
+
+    array_destroy(array_one);
+    array_destroy(array_two);
+    return EXIT_SUCCESS;
 }
 
 /**
@@ -148,142 +110,91 @@ static int similarity_score(int num, const int *array, int size) {
  * @param numbers Pointer to the array of integers.
  * @param size Number of elements in the array.
  */
-void bubble_sort(int numbers[], int size) {
-  int i, j, tmp;
-
-  if ((numbers == NULL) || (size <= 0)) {
-    ERROR_LOG("Invalid array or size");
-    return;
-  }
-
-  for (i = size - 1; i >= 0; i--) {
-    for (j = 1; j <= i; j++) {
-      if (numbers[j - 1] > numbers[j]) {
-        tmp = numbers[j - 1];
-        numbers[j - 1] = numbers[j];
-        numbers[j] = tmp;
-      }
+void
+bubble_sort (int numbers[], int size)
+{
+    if ((numbers == NULL) || (size <= 0))
+    {
+        ERROR_LOG("Invalid array or size");
+        return;
     }
-  }
+
+    for (int i = size - 1; i >= 0; i--)
+    {
+        for (int j = 1; j <= i; j++)
+        {
+            if (numbers[j - 1] > numbers[j])
+            {
+                int tmp        = numbers[j - 1];
+                numbers[j - 1] = numbers[j];
+                numbers[j]     = tmp;
+            }
+        }
+    }
+}
+
+/**
+ * @brief Calculates a similarity score for a given integer.
+ *
+ * The similarity score is the product of the integer and its frequency
+ * in the array. The array must be sorted and contain only valid integers.
+ *
+ * @param num The integer for which the similarity score is calculated.
+ * @param array Pointer to a sorted array of integers.
+ * @param size The size of the array.
+ * @return The similarity score if successful, or 0 on invalid input.
+ */
+static int
+similarity_score (int num, const int *array, int size)
+{
+    if ((num < 0) || (array == NULL) || (size <= 0))
+    {
+        return 0;
+    }
+
+    int count = 0;
+    for (int idx = 0; idx < size; idx++)
+    {
+        if (array[idx] == DNE)
+        {
+            continue;
+        }
+        if (array[idx] > num)
+        {
+            break;
+        }
+        if (array[idx] == num)
+        {
+            count++;
+        }
+    }
+    return count * num;
 }
 
 /**
  * @brief Extracts two integers from a line of text.
  *
+ * Parses a line of text for two integers and stores them in the `digits` array.
+ *
  * @param line Input line of text.
- * @param digits Array to store the extracted integers.
+ * @param digits Array to store the extracted integers (size 2).
  * @return int EXIT_SUCCESS if successful, otherwise EXIT_FAILURE.
  */
-static int extract_digits(const char *line, int digits[2]) {
-  if ((line == NULL) || (digits == NULL)) {
-    ERROR_LOG("Invalid input to extract_digits");
-    return EXIT_FAILURE;
-  }
-
-  if (sscanf(line, "%d %d", &digits[0], &digits[1]) != 2) {
-    ERROR_LOG("Failed to parse integers");
-    return EXIT_FAILURE;
-  }
-
-  return EXIT_SUCCESS;
-}
-
-/**
- * @brief Initializes a new SortedArrays structure.
- *
- * @return Pointer to the initialized structure, or NULL on failure.
- */
-static SortedArrays *sortedarrays_initialize(void) {
-    SortedArrays *array = calloc(1, sizeof(SortedArrays));
-    if (array == NULL) {
-        ERROR_LOG("Failed to allocate memory for SortedArrays");
-        return NULL;
-    }
-
-    array->list_one = calloc(INITIAL_LIST_SIZE, sizeof(int));
-    array->list_two = calloc(INITIAL_LIST_SIZE, sizeof(int));
-
-    if ((array->list_one == NULL) || (array->list_two == NULL)) {
-        ERROR_LOG("Failed to allocate memory for arrays");
-        sortedarrays_destroy(array);
-        return NULL;
-    }
-
-    // Initialize arrays to ELE_DNE
-    for (int i = 0; i < INITIAL_LIST_SIZE; i++) {
-        array->list_one[i] = ELE_DNE;
-        array->list_two[i] = ELE_DNE;
-    }
-
-    array->max_size = INITIAL_LIST_SIZE;
-
-    return array;
-}
-
-/**
- * @brief Resizes the arrays in the SortedArrays structure.
- *
- * @param array Pointer to the SortedArrays structure.
- * @return int EXIT_SUCCESS on success, otherwise EXIT_FAILURE.
- */
-static int sortedarrays_resize(SortedArrays *array) {
-    int new_size = array->max_size * 2;
-    int *new_list_one = realloc(array->list_one, new_size * sizeof(int));
-    int *new_list_two = realloc(array->list_two, new_size * sizeof(int));
-
-    if ((new_list_one == NULL) || (new_list_two == NULL)) {
-        ERROR_LOG("Failed to resize arrays");
+static int
+extract_digits (const char *line, int digits[2])
+{
+    if ((line == NULL) || (digits == NULL))
+    {
+        ERROR_LOG("Invalid input to extract_digits");
         return EXIT_FAILURE;
     }
 
-    // Set new elements to ELE_DNE
-    for (int i = array->max_size; i < new_size; i++) {
-        new_list_one[i] = ELE_DNE;
-        new_list_two[i] = ELE_DNE;
+    if (sscanf(line, "%d %d", &digits[0], &digits[1]) != 2)
+    {
+        ERROR_LOG("Failed to parse integers");
+        return EXIT_FAILURE;
     }
-
-    array->list_one = new_list_one;
-    array->list_two = new_list_two;
-    array->max_size = new_size;
-
     return EXIT_SUCCESS;
 }
 
-/**
- * @brief Frees the memory associated with a SortedArrays structure.
- *
- * @param array Pointer to the SortedArrays structure to free.
- */
-static void sortedarrays_destroy(SortedArrays *array) {
-  if (array != NULL) {
-    free(array->list_one);
-    free(array->list_two);
-    free(array);
-  }
-}
-
-/**
- * @brief Adds a pair of integers to the SortedArrays structure.
- *
- * @param array Pointer to the SortedArrays structure.
- * @param elements Array containing the two integers to add.
- * @return int EXIT_SUCCESS on success, otherwise EXIT_FAILURE.
- */
-static int sortedarrays_add(SortedArrays *array, const int elements[2]) {
-  if ((array == NULL) || (elements == NULL)) {
-    ERROR_LOG("Invalid input to sortedarrays_add");
-    return EXIT_FAILURE;
-  }
-
-  if (array->curr_idx >= array->max_size) {
-    if (sortedarrays_resize(array) == EXIT_FAILURE) {
-      return EXIT_FAILURE;
-    }
-  }
-
-  array->list_one[array->curr_idx] = elements[0];
-  array->list_two[array->curr_idx] = elements[1];
-  array->curr_idx++;
-
-  return EXIT_SUCCESS;
-}
+/*** end of file ***/

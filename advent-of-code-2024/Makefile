@@ -7,7 +7,7 @@ OBJ_DIR = obj
 BIN_DIR = bin
 CFLAGS = -Wall -Wextra -pedantic -std=c99 -I$(INCLUDE_DIR)
 LDFLAGS = -lcunit
-FORMAT = clang-format-15
+FORMAT = clang-format-15 -assume-filename=.clang-format
 TIDY = clang-tidy $(addprefix --extra-arg=,$(subst -I,-I ,$(CFLAGS)))
 
 # Source files and objects
