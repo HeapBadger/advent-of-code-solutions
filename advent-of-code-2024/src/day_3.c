@@ -20,7 +20,7 @@ typedef struct
     bool   b_do_execute;
 } PatternData;
 
-/* Function Prototypes */
+// /* Function Prototypes */
 void         find_pattern(const char *input, PatternData *data);
 bool         matches_pattern(const char *str, int *a, int *b);
 PatternData *patterndata_initialization();
@@ -73,10 +73,11 @@ day_3 (const char *filename, int result[2])
 
     for (int idx = 0; idx < data->multiplicand->idx; idx++)
     {
-        sum_one
-            += (data->multiplicand->list[idx] * data->multiplier->list[idx]);
-        sum_two += (data->multiplicand->list[idx] * data->multiplier->list[idx]
-                    * data->conditional->list[idx]);
+        sum_one += (*(int *)data->multiplicand->list[idx]
+                    * *(int *)data->multiplier->list[idx]);
+        sum_two += (*(int *)data->multiplicand->list[idx]
+                    * *(int *)data->multiplier->list[idx]
+                    * *(int *)data->conditional->list[idx]);
     }
 
     result[0]     = sum_one;
@@ -142,9 +143,13 @@ find_pattern (const char *input, PatternData *data)
             if (matches_pattern(next_match, &a, &b))
             {
                 // printf("(%d, %d) ", a, b);
-                if ((array_add(data->multiplicand, a) == EXIT_FAILURE)
-                    || (array_add(data->multiplier, b) == EXIT_FAILURE)
-                    || (array_add(data->conditional, (int)data->b_do_execute)))
+                if ((array_add(data->multiplicand, &a, sizeof(int))
+                     == EXIT_FAILURE)
+                    || (array_add(data->multiplier, &b, sizeof(int))
+                        == EXIT_FAILURE)
+                    || (array_add(
+                            data->conditional, &data->b_do_execute, sizeof(int))
+                        == EXIT_FAILURE))
                 {
                     ERROR_LOG("Unable to add element to array");
                     break;
@@ -168,13 +173,17 @@ find_pattern (const char *input, PatternData *data)
 }
 
 /**
- * @brief Matches a string against the "mul(a, b)" pattern and extracts integers a and b.
+ * @brief Matches a string against the "mul(a, b)" pattern and extracts
+ integers
+ * a and b.
  *
  * @param str The input string to match.
  * @param a Pointer to store the first extracted integer.
  * @param b Pointer to store the second extracted integer.
  *
- * @return true if the string matches the pattern and integers are successfully extracted, false otherwise.
+ * @return true if the string matches the pattern and integers are
+ successfully
+ * extracted, false otherwise.
  */
 bool
 matches_pattern (const char *str, int *a, int *b)
@@ -221,7 +230,8 @@ EXIT:
 /**
  * @brief Initializes a PatternData structure and its associated arrays.
  *
- * @return Pointer to the initialized PatternData structure, or NULL on failure.
+ * @return Pointer to the initialized PatternData structure, or NULL on
+ failure.
  */
 PatternData *
 patterndata_initialization ()
@@ -257,7 +267,8 @@ EXIT:
 }
 
 /**
- * @brief Frees memory associated with a PatternData structure and its arrays.
+ * @brief Frees memory associated with a PatternData structure and its
+ arrays.
  *
  * @param data Pointer to the PatternData structure to destroy.
  */

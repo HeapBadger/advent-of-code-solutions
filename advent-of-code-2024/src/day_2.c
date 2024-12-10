@@ -14,8 +14,8 @@
 
 /* Function Prototypes */
 void extract_digits(const char *line, Array *record);
-bool b_is_stable(int *record, int size);
-bool b_is_stable_with_damper(int *record, int size);
+bool b_is_stable(void **record, int size);
+bool b_is_stable_with_damper(void **record, int size);
 
 int
 day_2 (const char *filename, int result[2])
@@ -60,8 +60,13 @@ day_2 (const char *filename, int result[2])
             += b_is_stable_with_damper(record->list, record->idx); // part two
 
         // reset array for next record
+        for (int idx = 0; idx < record->idx; idx++)
+        {
+            free(record->list[idx]);
+            record->list[idx] = NULL;
+        }
+
         record->idx = 0;
-        memset(record->list, 0, record->max * sizeof(int));
     }
 
     result[0]     = sum_one;
@@ -82,8 +87,10 @@ EXIT:
 /**
  * @brief Extracts digits from a string and stores them in an Array.
  *
- * This function loops through each character in the line. If a digit is found,
- * it is stored in the Array. The Array's index is incremented for each digit.
+ * This function loops through each character in the line. If a digit is
+ found,
+ * it is stored in the Array. The Array's index is incremented for each
+ digit.
  *
  * @param line Pointer to a null-terminated string containing digits.
  * @param record Pointer to the Array structure where digits will be stored.
@@ -102,7 +109,7 @@ extract_digits (const char *line, Array *record)
         char *endline;
         int   ele = (int)strtol(line, &endline, 10);
 
-        if (array_add(record, ele) == EXIT_FAILURE)
+        if (array_add(record, &ele, sizeof(int)) == EXIT_FAILURE)
         {
             return;
         }
@@ -152,7 +159,7 @@ extract_digits (const char *line, Array *record)
  * @return `true` if the sequence is stable, `false` otherwise.
  */
 bool
-b_is_stable (int *record, int size)
+b_is_stable (void **record, int size)
 {
     bool stable = true;
     bool pos    = false;
@@ -165,7 +172,7 @@ b_is_stable (int *record, int size)
 
     for (int idx = 0; idx < size - 1; idx++)
     {
-        int diff = record[idx] - record[idx + 1];
+        int diff = *(int *)record[idx] - *(int *)record[idx + 1];
 
         // Check if the difference is within the valid range
         if (abs(diff) < 1 || abs(diff) > 3)
@@ -196,27 +203,20 @@ b_is_stable (int *record, int size)
 }
 
 /**
- * @brief Checks the stability of a sequence of integers, allowing one element
- * to be removed.
- *
- * This function first checks if the sequence is stable without modification. If
- * the sequence is not stable, it attempts to remove one element at a time and
- * checks if the resulting sequence becomes stable. A sequence is stable if the
- * absolute difference between any two consecutive integers is between 1 and 3
- * (inclusive), and the sequence does not change direction (i.e., it either only
- * increases or only decreases).
+ * @brief Checks the stability of a sequence of integers, allowing one
+ * element to be removed.
  *
  * @param record Pointer to an array of integers representing the sequence.
  * @param size The size of the array.
- * @return `true` if the sequence is stable (either initially or after removing
+ * @return `true` if the sequence is stable (either initially or after
+ removing
  * one element), `false` otherwise.
  */
-
 bool
-b_is_stable_with_damper (int *record, int size)
+b_is_stable_with_damper (void **record, int size)
 {
-    bool stable     = false;
-    int *mod_record = NULL;
+    bool   stable     = false;
+    void **mod_record = NULL;
 
     if (record == NULL || size <= 1)
     {
@@ -231,7 +231,7 @@ b_is_stable_with_damper (int *record, int size)
     }
 
     // Next, attempt to remove an element and check stability
-    mod_record = calloc(size - 1, sizeof(int));
+    mod_record = calloc(size - 1, sizeof(void *));
 
     if (mod_record == NULL)
     {
@@ -244,7 +244,7 @@ b_is_stable_with_damper (int *record, int size)
     {
         for (int jdx = 0; jdx < size - 1; jdx++)
         {
-            mod_record[jdx] = DNE;
+            mod_record[jdx] = NULL;
         }
 
         // Copy the elements, skipping the i-th element

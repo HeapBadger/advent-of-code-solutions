@@ -11,9 +11,9 @@
  */
 
 /* Function Prototypes */
-static int similarity_score(int num, const int *array, int size);
+static int similarity_score(int num, void **array, int size);
 static int extract_digits(const char *line, int digits[2]);
-void       bubble_sort(int numbers[], int size);
+void       bubble_sort(Array *array);
 
 int
 day_1 (const char *filename, int result[2])
@@ -61,8 +61,8 @@ day_1 (const char *filename, int result[2])
 
         if (extract_digits(line, digits) == EXIT_SUCCESS)
         {
-            array_add(array_one, digits[0]);
-            array_add(array_two, digits[1]);
+            array_add(array_one, &digits[0], sizeof(int));
+            array_add(array_two, &digits[1], sizeof(int));
         }
     }
 
@@ -70,14 +70,14 @@ day_1 (const char *filename, int result[2])
     fp = NULL;
 
     // Part 1: Compute sum of absolute differences
-    bubble_sort(array_one->list, array_one->idx);
-    bubble_sort(array_two->list, array_two->idx);
+    bubble_sort(array_one);
+    bubble_sort(array_two);
 
     int sum = 0;
 
     for (int idx = 0; idx < array_one->idx; idx++)
     {
-        sum += abs(array_one->list[idx] - array_two->list[idx]);
+        sum += abs(*(int *)array_one->list[idx] - *(int *)array_two->list[idx]);
     }
 
     result[0] = sum;
@@ -88,7 +88,7 @@ day_1 (const char *filename, int result[2])
     for (int idx = 0; idx < array_one->idx; idx++)
     {
         sum += similarity_score(
-            array_one->list[idx], array_two->list, array_two->idx);
+            *(int *)array_one->list[idx], array_two->list, array_two->idx);
     }
 
     result[1]     = sum;
@@ -113,23 +113,27 @@ EXIT:
  * @param size Number of elements in the array.
  */
 void
-bubble_sort (int numbers[], int size)
+bubble_sort (Array *array)
 {
-    if ((numbers == NULL) || (size <= 0))
+    if (array == NULL || array->list == NULL || array->idx <= 0)
     {
         ERROR_LOG("Invalid array or size");
         return;
     }
 
-    for (int i = size - 1; i >= 0; i--)
+    // Perform bubble sort on the array
+    for (int i = array->idx - 1; i > 0; i--)
     {
-        for (int j = 1; j <= i; j++)
+        for (int j = 0; j < i; j++)
         {
-            if (numbers[j - 1] > numbers[j])
+            // Cast array elements to int* and dereference to compare actual
+            // values
+            if (*(int *)array->list[j] > *(int *)array->list[j + 1])
             {
-                int tmp        = numbers[j - 1];
-                numbers[j - 1] = numbers[j];
-                numbers[j]     = tmp;
+                // Swap the elements
+                void *tmp          = array->list[j];
+                array->list[j]     = array->list[j + 1];
+                array->list[j + 1] = tmp;
             }
         }
     }
@@ -142,12 +146,12 @@ bubble_sort (int numbers[], int size)
  * in the array. The array must be sorted and contain only valid integers.
  *
  * @param num The integer for which the similarity score is calculated.
- * @param array Pointer to a sorted array of integers.
+ * @param array Pointer to a sorted void array filled with integers.
  * @param size The size of the array.
  * @return The similarity score if successful, or 0 on invalid input.
  */
 static int
-similarity_score (int num, const int *array, int size)
+similarity_score (int num, void **array, int size)
 {
     if ((num < 0) || (array == NULL) || (size <= 0))
     {
@@ -157,15 +161,15 @@ similarity_score (int num, const int *array, int size)
     int count = 0;
     for (int idx = 0; idx < size; idx++)
     {
-        if (array[idx] == DNE)
+        if (*(int *)array[idx] == DNE)
         {
             continue;
         }
-        if (array[idx] > num)
+        if (*(int *)array[idx] > num)
         {
             break;
         }
-        if (array[idx] == num)
+        if (*(int *)array[idx] == num)
         {
             count++;
         }

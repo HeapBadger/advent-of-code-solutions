@@ -21,6 +21,7 @@
 static void test_one(void);
 static void test_two(void);
 static void test_three(void);
+static void test_four(void);
 
 /**
  * @brief Main function to initialize and execute CUnit tests.
@@ -61,6 +62,11 @@ main (void)
     if (NULL == CU_add_test(suite, "test_three", test_three))
     {
         ERROR_LOG("Failed to add test_three to suite");
+    }
+
+    if (NULL == CU_add_test(suite, "test_four", test_four))
+    {
+        ERROR_LOG("Failed to add test_four to suite");
     }
 
     retval = CU_basic_run_tests();
@@ -118,6 +124,20 @@ test_three (void)
     int actual_result[]   = { 0, 0 };    /**< Array to store actual results */
 
     CU_ASSERT_EQUAL_FATAL(day_3("data/example_3.txt", actual_result), 0);
+    CU_ASSERT_EQUAL_FATAL(actual_result[0], expected_result[0]);
+    CU_ASSERT_EQUAL_FATAL(actual_result[1], expected_result[1]);
+}
+
+/**
+ * @brief Test case for validating the functionality of the `day_4` function.
+ */
+static void
+test_four (void)
+{
+    int expected_result[] = { 18, 0 }; /**< Expected results for comparison */
+    int actual_result[]   = { 0, 0 };  /**< Array to store actual results */
+
+    CU_ASSERT_EQUAL_FATAL(day_4("data/example_4.txt", actual_result), 0);
     CU_ASSERT_EQUAL_FATAL(actual_result[0], expected_result[0]);
     CU_ASSERT_EQUAL_FATAL(actual_result[1], expected_result[1]);
 }

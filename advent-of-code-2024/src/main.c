@@ -2,6 +2,7 @@
 #include "day_1.h"
 #include "day_2.h"
 #include "day_3.h"
+#include "day_4.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -136,7 +137,10 @@ main (int argc, char *argv[])
 
     // array of all available challenges
     DayChallenge challenges[] = {
-        { "day_1", day_1, 1 }, { "day_2", day_2, 2 }, { "day_3", day_3, 3 },
+        { "day_1", day_1, 1 },
+        { "day_2", day_2, 2 },
+        { "day_3", day_3, 3 },
+        { "day_4", day_4, 4 },
         // add additional days here as needed
     };
 
