@@ -120,3 +120,5 @@ array_add (Array *array, const int ele)
 EXIT:
     return return_status;
 }
+
+/*** end of file ***/

@@ -13,6 +13,7 @@
 /* Function Prototypes */
 static int similarity_score(int num, const int *array, int size);
 static int extract_digits(const char *line, int digits[2]);
+void       bubble_sort(int numbers[], int size);
 
 int
 day_1 (const char *filename, int result[2])
@@ -90,7 +91,8 @@ day_1 (const char *filename, int result[2])
             array_one->list[idx], array_two->list, array_two->idx);
     }
 
-    result[1] = sum;
+    result[1]     = sum;
+    return_status = EXIT_SUCCESS;
 
 EXIT:
     if (NULL != fp)
@@ -101,7 +103,7 @@ EXIT:
 
     array_destroy(array_one);
     array_destroy(array_two);
-    return EXIT_SUCCESS;
+    return return_status;
 }
 
 /**

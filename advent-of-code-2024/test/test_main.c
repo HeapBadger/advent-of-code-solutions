@@ -100,3 +100,5 @@ test_two (void)
     CU_ASSERT_EQUAL_FATAL(actual_result[0], expected_result[0]);
     CU_ASSERT_EQUAL_FATAL(actual_result[1], expected_result[1]);
 }
+
+/*** end of file ***/
