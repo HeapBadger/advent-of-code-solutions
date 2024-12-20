@@ -1,8 +1,6 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
-#include <stddef.h>
-
 /**
  * @file array.h
  * @brief Array utilities and definitions.
@@ -51,17 +49,6 @@ typedef struct
  * @return Pointer to the newly created array, or NULL on failure.
  */
 Array *array_initialization(ElementType ele_type);
-
-/**
- * @brief Resizes the array to a larger capacity.
- *
- * This function reallocates memory for the array to double its size.
- * New elements are initialized to NULL.
- *
- * @param array Pointer to the array to be resized.
- * @return ERROR_SUCCESS on success, or an appropriate error code on failure.
- */
-int array_resize(Array *array);
 
 /**
  * @brief Destroys the array, freeing allocated memory.

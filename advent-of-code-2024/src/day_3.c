@@ -38,7 +38,7 @@ day_3 (const char *filename, int result[2])
 
     if ((NULL == filename) || (NULL == result))
     {
-        ERROR_LOG("Invalid input to day_3");
+        ERROR_LOG("Invalid input to day_3: filename or result are NULL");
         return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }
@@ -47,7 +47,7 @@ day_3 (const char *filename, int result[2])
 
     if (NULL == fptr)
     {
-        ERROR_LOG("Unable to open file");
+        ERROR_LOG("Failed fopen: file not found");
         return_status = ERROR_FILE_NOT_FOUND;
         goto EXIT;
     }
@@ -59,7 +59,7 @@ day_3 (const char *filename, int result[2])
 
     if (NULL == data)
     {
-        ERROR_LOG("Unable to initialize PatternData");
+        ERROR_LOG("Failed patterndata_initialization: unable to allocate memory");
         return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
@@ -72,7 +72,7 @@ day_3 (const char *filename, int result[2])
     if ((data->multiplicand->idx != data->multiplier->idx)
         || (data->conditional->idx != data->multiplier->idx))
     {
-        ERROR_LOG("Failed to correctly parse multipliers");
+        ERROR_LOG("Failed find_pattern: unable to parse correctly");
         goto EXIT;
     }
 
@@ -111,7 +111,7 @@ find_pattern (const char *input, PatternData *data)
 {
     if ((NULL == input) || (NULL == data))
     {
-        ERROR_LOG("Invalid input to find_pattern");
+        ERROR_LOG("Invalid input to find_pattern: input or data are NULL");
         return;
     }
 
@@ -154,7 +154,7 @@ find_pattern (const char *input, PatternData *data)
                     || (ERROR_SUCCESS
                         != array_add(data->conditional, &data->b_do_execute)))
                 {
-                    ERROR_LOG("Unable to add element to array");
+                    ERROR_LOG("Failed array_add: unable to add element to array");
                     break;
                 }
             }
@@ -244,7 +244,7 @@ patterndata_initialization ()
 
     if (NULL == data)
     {
-        ERROR_LOG("Failed to allocate memory for PatternData");
+        ERROR_LOG("Failed calloc: unable to allocate memory");
         goto EXIT;
     }
 

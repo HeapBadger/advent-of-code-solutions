@@ -17,6 +17,9 @@
 
 #define ARRAY_INITIAL_SIZE 10
 
+/* Function Prototypes */
+static int array_resize (Array *array);
+
 Array *
 array_initialization (ElementType ele_type)
 {
@@ -50,7 +53,16 @@ EXIT:
     return array;
 }
 
-int
+/**
+ * @brief Resizes the array to a larger capacity.
+ *
+ * This function reallocates memory for the array to double its size.
+ * New elements are initialized to NULL.
+ *
+ * @param array Pointer to the array to be resized.
+ * @return ERROR_SUCCESS on success, or an appropriate error code on failure.
+ */
+static int
 array_resize (Array *array)
 {
     int return_status = ERROR_NULL_POINTER;
@@ -65,7 +77,7 @@ array_resize (Array *array)
 
     if (NULL == new_list)
     {
-        ERROR_LOG("Failed to resize array");
+        ERROR_LOG("Failed realloc: unable to allocate memory");
         return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
@@ -112,7 +124,7 @@ array_add (Array *array, const void *ele)
 
     if (NULL == array)
     {
-        ERROR_LOG("Invalid input to array_add: Array is NULL");
+        ERROR_LOG("Invalid input to array_add: array is NULL");
         goto EXIT;
     }
 
@@ -123,7 +135,7 @@ array_add (Array *array, const void *ele)
 
         if (ERROR_SUCCESS != return_status)
         {
-            ERROR_LOG("Failed to resize array in array_add");
+            ERROR_LOG("Failed array_resize: unable to allocate memory");
             goto EXIT;
         }
     }
@@ -145,7 +157,7 @@ array_add (Array *array, const void *ele)
             ele_size = sizeof(char);
             break;
         default:
-            ERROR_LOG("Unsupported element type");
+            ERROR_LOG("Failed element type enumeration: unsupported type");
             return_status = ERROR_INVALID_INPUT;
             goto EXIT;
     }
@@ -155,7 +167,7 @@ array_add (Array *array, const void *ele)
 
     if (NULL == array->list[array->idx])
     {
-        ERROR_LOG("Failed to allocate memory for new element in array_add");
+        ERROR_LOG("Failed calloc: unable to allocate memory");
         return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
@@ -176,7 +188,7 @@ array_reset (Array *array)
 
     if (NULL == array)
     {
-        ERROR_LOG("Invalid input to array_reset: Array is NULL");
+        ERROR_LOG("Invalid input to array_reset: array is NULL");
         goto EXIT;
     }
 
@@ -207,19 +219,13 @@ array_copy (Array *src, Array *dst)
 
     if ((NULL == src) || (NULL == dst))
     {
-        ERROR_LOG("Cannot have null pointers as input");
-        goto EXIT;
-    }
-
-    if ((NULL == src->list) || (NULL != dst->list))
-    {
-        ERROR_LOG("Cannot have null pointers as input lists");
+        ERROR_LOG("Invalid input to array_copy: arrays are NULL");
         goto EXIT;
     }
 
     if (src->ele_type != dst->ele_type)
     {
-        ERROR_LOG("Arrays must have matching data types");
+        ERROR_LOG("Invalid input to array_copy: arrays must have matching data types");
         return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }
@@ -229,7 +235,7 @@ array_copy (Array *src, Array *dst)
 
     if (ERROR_SUCCESS != return_status)
     {
-        ERROR_LOG("Unable to reset destination array");
+        ERROR_LOG("Failed array_reset: unable to reset destination array");
         goto EXIT;
     }
 
@@ -240,7 +246,7 @@ array_copy (Array *src, Array *dst)
 
         if (ERROR_SUCCESS != return_status)
         {
-            ERROR_LOG("Failed to add element to destination array");
+            ERROR_LOG("Failed array_add: unable to add element to destination array");
             break;
         }
     }
@@ -254,13 +260,13 @@ array_print (Array *array)
 {
     if (NULL == array)
     {
-        ERROR_LOG("Invalid input to array_print: Array is NULL");
+        ERROR_LOG("Invalid input to array_print: array is NULL");
         return;
     }
 
     if (NULL == array->list)
     {
-        ERROR_LOG("Invalid input to array_print: Array list is NULL");
+        ERROR_LOG("Invalid input to array_print: array list is NULL");
         return;
     }
 
@@ -297,8 +303,6 @@ array_print (Array *array)
             printf(" ");
         }
     }
-
-    printf("\n");
 }
 
 /*** end of file ***/

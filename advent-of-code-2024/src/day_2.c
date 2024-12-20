@@ -29,7 +29,7 @@ day_2 (const char *filename, int result[2])
 
     if ((NULL == filename) || (NULL == result))
     {
-        ERROR_LOG("Invalid input to day_2");
+        ERROR_LOG("Invalid input to day_2: filename or result are NULL");
         return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }
@@ -38,7 +38,7 @@ day_2 (const char *filename, int result[2])
 
     if (NULL == fptr)
     {
-        ERROR_LOG("Unable to open file");
+        ERROR_LOG("Failed fopen: file not found");
         return_status = ERROR_FILE_NOT_FOUND;
         goto EXIT;
     }
@@ -47,7 +47,7 @@ day_2 (const char *filename, int result[2])
 
     if (NULL == record)
     {
-        ERROR_LOG("Unable to initialize array");
+        ERROR_LOG("Failed array_initialization: unable to allocate memory");
         return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
@@ -104,7 +104,7 @@ extract_digits (const char *line, Array *record)
 
     if ((NULL == line) || (NULL == record))
     {
-        ERROR_LOG("Invalid input to extract_digits");
+        ERROR_LOG("Invalid input to extract_digits: line or record are NULL");
         return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }
@@ -118,7 +118,7 @@ extract_digits (const char *line, Array *record)
 
         if (ERROR_SUCCESS != return_status)
         {
-            ERROR_LOG("Unable to add element to array");
+            ERROR_LOG("Failed array_add: unable to add element to array");
             goto EXIT;
         }
 
@@ -132,7 +132,7 @@ extract_digits (const char *line, Array *record)
             }
             else
             {
-                ERROR_LOG("Invalid character in input");
+                ERROR_LOG("Failed isspace: invalid input found");
                 return_status = ERROR_INVALID_INPUT;
                 goto EXIT;
             }
@@ -241,7 +241,7 @@ b_is_stable_with_damper (void **record, int size)
 
     if (NULL == mod_record)
     {
-        ERROR_LOG("Failed to allocate memroy for mod_record");
+        ERROR_LOG("Invalid input to calloc: mod_record is NULL");
         goto EXIT;
     }
 

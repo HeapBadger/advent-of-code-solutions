@@ -18,6 +18,12 @@
  * Take a look at the little Elf's word search. How many times does XMAS appear?
  *
  * Part Two:
+ * Looking for the instructions, you flip over the word search to find that this
+ * isn't actually an XMAS puzzle; it's an X-MAS puzzle in which you're supposed
+ * to find two MAS in the shape of an X.
+ * 
+ * Flip the word search from the instructions back over to the word search side
+ * and try again. How many times does an X-MAS appear?
  */
 
 /**

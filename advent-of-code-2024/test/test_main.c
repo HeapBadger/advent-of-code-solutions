@@ -38,42 +38,42 @@ main (void)
     retval = CU_initialize_registry();
     if (CUE_SUCCESS != retval)
     {
-        ERROR_LOG("Failed to initialize CUnit registry");
+        ERROR_LOG("Failed CU_initialize_registry: unable to initialize CUnit registry");
         goto CLEANUP;
     }
 
     CU_pSuite suite = CU_add_suite("Testing Suite", NULL, NULL);
     if (NULL == suite)
     {
-        ERROR_LOG("Failed to create CUnit test suite");
+        ERROR_LOG("Failed CU_add_suite: unable to create CUnit test suite");
         goto CLEANUP;
     }
 
     // Add test cases to the suite as needed
     if (NULL == CU_add_test(suite, "test_one", test_one))
     {
-        ERROR_LOG("Failed to add test_one to suite");
+        ERROR_LOG("Failed CU_add_test: unable to add test_one");
     }
 
     if (NULL == CU_add_test(suite, "test_two", test_two))
     {
-        ERROR_LOG("Failed to add test_two to suite");
+        ERROR_LOG("Failed CU_add_test: unable to add test_two");
     }
 
     if (NULL == CU_add_test(suite, "test_three", test_three))
     {
-        ERROR_LOG("Failed to add test_three to suite");
+        ERROR_LOG("Failed CU_add_test: unable to add test_three");
     }
 
     if (NULL == CU_add_test(suite, "test_four", test_four))
     {
-        ERROR_LOG("Failed to add test_four to suite");
+        ERROR_LOG("Failed CU_add_test: unable to add test_four");
     }
 
     retval = CU_basic_run_tests();
     if (CUE_SUCCESS != retval)
     {
-        ERROR_LOG("Failed to run test suites");
+        ERROR_LOG("Failed CU_basic_run_tests: unable to run tests");
         goto CLEANUP;
     }
 
@@ -135,7 +135,7 @@ test_three (void)
 static void
 test_four (void)
 {
-    int expected_result[] = { 18, 0 }; /**< Expected results for comparison */
+    int expected_result[] = { 18, 9 }; /**< Expected results for comparison */
     int actual_result[]   = { 0, 0 };  /**< Array to store actual results */
 
     CU_ASSERT_EQUAL_FATAL(day_4("data/example_4.txt", actual_result), 0);

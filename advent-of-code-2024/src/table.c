@@ -21,7 +21,7 @@ table_initialization (ElementType ele_type, int num_rows)
     if (0 >= num_rows)
     {
         ERROR_LOG(
-            "Invalid input to table_initialization: Rows must be a positive "
+            "Invalid input to table_initialization: rows must be a positive "
             "number");
         goto EXIT;
     }
@@ -30,7 +30,7 @@ table_initialization (ElementType ele_type, int num_rows)
 
     if (NULL == table)
     {
-        ERROR_LOG("Failed to allocate memory for Table");
+        ERROR_LOG("Failed calloc: unable to allocate memory");
         goto EXIT;
     }
 
@@ -39,7 +39,7 @@ table_initialization (ElementType ele_type, int num_rows)
 
     if (NULL == table->content)
     {
-        ERROR_LOG("Failed to allocate memory for Table->content");
+        ERROR_LOG("Failed calloc: unable to allocate memory");
         goto EXIT;
     }
 
@@ -87,13 +87,13 @@ table_add_element (Table *table, int row, const void *ele)
 
     if ((NULL == table) || (NULL == ele))
     {
-        ERROR_LOG("Invalid input to table_add_element: Table or ele are NULL");
+        ERROR_LOG("Invalid input to table_add_element: table or ele are NULL");
         return_status = ERROR_NULL_POINTER;
     }
     else if ((0 > row) || (table->num_rows <= row))
     {
         ERROR_LOG(
-            "Invalid input to table_add_element: Row index out of bounds");
+            "Invalid input to table_add_element: row index out of bounds");
         return_status = ERROR_INDEX_OUT_OF_BOUNDS;
     }
     else
@@ -111,12 +111,12 @@ table_reset_row (Table *table, int row)
 
     if (NULL == table)
     {
-        ERROR_LOG("Invalid input to table_reset_row: Table is NULL");
+        ERROR_LOG("Invalid input to table_reset_row: table is NULL");
         return_status = ERROR_NULL_POINTER;
     }
     else if ((0 > row) || (table->num_rows <= row))
     {
-        ERROR_LOG("Invalid input to table_reset_row: Row index out of bounds");
+        ERROR_LOG("Invalid input to table_reset_row: row index out of bounds");
         return_status = ERROR_INDEX_OUT_OF_BOUNDS;
     }
     else
@@ -134,17 +134,18 @@ table_copy_row (Table *table, int src, int dst)
 
     if (NULL == table)
     {
-        ERROR_LOG("Invalid input to table_copy_row: Table is NULL");
+        ERROR_LOG("Invalid input to table_copy_row: table is NULL");
         return_status = ERROR_NULL_POINTER;
     }
     else if ((0 > src) || (table->num_rows <= src) || (0 > dst)
              || (table->num_rows <= dst))
     {
-        ERROR_LOG("Invalid input to table_reset_row: Row index out of bounds");
+        ERROR_LOG("Invalid input to table_reset_row: row index out of bounds");
         return_status = ERROR_INDEX_OUT_OF_BOUNDS;
     }
     else
     {
+
         return_status = array_copy(table->content[src], table->content[dst]);
     }
 
@@ -156,17 +157,17 @@ table_print (Table *table)
 {
     if (NULL == table)
     {
-        ERROR_LOG("Invalid input to table_print: Table is NULL");
+        ERROR_LOG("Invalid input to table_print: table is NULL");
         return;
     }
 
     if ((NULL == table->content) || (0 >= table->num_rows))
     {
-        ERROR_LOG("Invalid input to table_print: Table content is NULL");
+        ERROR_LOG("Invalid input to table_print: table content is NULL");
         return;
     }
 
-    printf("Table:\n");
+    printf("\nTable:\n");
 
     for (int idx = 0; idx < table->num_rows; idx++)
     {
@@ -174,7 +175,7 @@ table_print (Table *table)
         array_print(table->content[idx]);
     }
 
-    printf("\n\n");
+    printf("\n");
     return;
 }
 

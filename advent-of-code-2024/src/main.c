@@ -73,7 +73,7 @@ run_day (DayChallenge challenge)
     }
     else
     {
-        ERROR_LOG("example file not found");
+        ERROR_LOG("Failed access: example file not found");
         return_status = ERROR_FILE_NOT_FOUND;
     }
 
@@ -95,7 +95,7 @@ run_day (DayChallenge challenge)
     }
     else
     {
-        ERROR_LOG("actual file not found");
+        ERROR_LOG("Failed access: actual file not found");
         return_status = ERROR_FILE_NOT_FOUND;
     }
 
@@ -160,7 +160,7 @@ main (int argc, char *argv[])
     // print usage guide (too many arguments handed)
     else if (ARGS_COUNT < argc)
     {
-        ERROR_LOG("invalid argument");
+        ERROR_LOG("Invalid input to main: too many arguments handed");
         printf("%s\n", USAGE_GUIDE);
         return_status = ERROR_INVALID_INPUT;
     }
@@ -183,7 +183,7 @@ main (int argc, char *argv[])
 
         if (false == found)
         {
-            ERROR_LOG("invalid argument");
+            ERROR_LOG("Invalid input to main: unavailable argument");
             printf("%s\n", USAGE_GUIDE);
             return_status = ERROR_INVALID_INPUT;
         }

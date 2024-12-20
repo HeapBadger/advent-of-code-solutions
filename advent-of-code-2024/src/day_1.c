@@ -27,7 +27,7 @@ day_1 (const char *filename, int result[2])
 
     if ((NULL == filename) || (NULL == result))
     {
-        ERROR_LOG("Invalid input to day_1");
+        ERROR_LOG("Invalid input to day_1: filename or result are NULL");
         return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }
@@ -36,7 +36,7 @@ day_1 (const char *filename, int result[2])
 
     if (NULL == fptr)
     {
-        ERROR_LOG("Unable to open file");
+        ERROR_LOG("Failed fopen: file not found");
         return_status = ERROR_FILE_NOT_FOUND;
         goto EXIT;
     }
@@ -45,7 +45,7 @@ day_1 (const char *filename, int result[2])
 
     if (NULL == array_one)
     {
-        ERROR_LOG("Unable to initialize array");
+        ERROR_LOG("Failed array_initialization: unable to allocate memory");
         return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
@@ -54,7 +54,7 @@ day_1 (const char *filename, int result[2])
 
     if (NULL == array_two)
     {
-        ERROR_LOG("Unable to initialize array");
+        ERROR_LOG("Failed array_initialization: unable to allocate memory");
         return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
@@ -72,7 +72,7 @@ day_1 (const char *filename, int result[2])
         }
         else
         {
-            ERROR_LOG("Unable to extract digits");
+            ERROR_LOG("Failed extract_digits: unable to extract digits");
             goto EXIT;
         }
     }
@@ -125,7 +125,7 @@ bubble_sort (Array *array)
 {
     if ((NULL == array) || (NULL == array->list) || (0 >= array->idx))
     {
-        ERROR_LOG("Invalid array or size");
+        ERROR_LOG("Invalid input to bubble_sort: array or array->list are NULL");
         return;
     }
 
@@ -197,13 +197,13 @@ extract_digits (const char *line, int digits[2])
 {
     if ((NULL == line) || (NULL == digits))
     {
-        ERROR_LOG("Invalid input to extract_digits");
+        ERROR_LOG("Invalid input to extract_digits: line or digits are NULL");
         return ERROR_INVALID_INPUT;
     }
 
     if (sscanf(line, "%d %d", &digits[0], &digits[1]) != 2)
     {
-        ERROR_LOG("Failed to parse integers");
+        ERROR_LOG("Failed sscanf: unable to parse integers");
         return ERROR_UNKNOWN;
     }
 
