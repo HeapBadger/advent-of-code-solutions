@@ -1,6 +1,7 @@
 #include "array.h"
 #include "aux.h"
 #include "day_4.h"
+#include "error.h"
 
 #include <ctype.h>
 #include <stdbool.h>
@@ -18,41 +19,43 @@
 int
 day_4 (const char *filename, int result[2])
 {
-    FILE *fp                = NULL;
+    FILE *fptr              = NULL;
     char  line[BUFFER_SIZE] = { 0 };
-    int   return_status     = EXIT_FAILURE;
+    int   return_status     = ERROR_UNKNOWN;
 
-    if ((filename == NULL) || (result == NULL))
+    if ((NULL == filename) || (NULL == result))
     {
         ERROR_LOG("Invalid input to day_4");
+        return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }
 
-    fp = fopen(filename, "r");
+    fptr = fopen(filename, "r");
 
-    if (fp == NULL)
+    if (NULL == fptr)
     {
         ERROR_LOG("Unable to open file");
+        return_status = ERROR_FILE_NOT_FOUND;
         goto EXIT;
     }
 
     int sum_one = 0;
     int sum_two = 0;
 
-    // while (fgets(line, sizeof(line), fp) != NULL)
+    // while (NULL != fgets(line, sizeof(line), fptr))
     // {
     //     printf("line: %s\n", line);
     // }
 
     result[0]     = 18;
     result[1]     = sum_two;
-    return_status = EXIT_SUCCESS;
+    return_status = ERROR_SUCCESS;
 
 EXIT:
-    if (fp != NULL)
+    if (NULL != fptr)
     {
-        fclose(fp);
-        fp = NULL;
+        fclose(fptr);
+        fptr = NULL;
     }
 
     return return_status;
