@@ -1,12 +1,13 @@
+#include "array.h"
 #include "aux.h"
 #include "day_1.h"
 #include "day_2.h"
 #include "day_3.h"
 #include "day_4.h"
+#include "error.h"
 
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -43,19 +44,17 @@ typedef struct
  * @param challenge A `DayChallenge` structure containing the day name,
  * function, and day number.
  *
- * @return Status code from challenge.
+ * @return ERROR_SUCCESS on success, or an appropriate error code on failure.
  */
 int
 run_day (DayChallenge challenge)
 {
-    int exit_status;
+    int return_status;
     printf("\nRunning %s challenge...\n", challenge.day_name);
 
     char example_file[BUFFER_SIZE];
     char actual_file[BUFFER_SIZE];
-    int  result_array[2] = {
-        0, 0
-    }; // Initialize result array to zero to avoid uninitialized access
+    int  result_array[2] = { 0, 0 };
 
     // construct file paths using the day number
     snprintf(example_file,
@@ -68,19 +67,18 @@ run_day (DayChallenge challenge)
              challenge.day_number);
 
     // check and run the example file if it exists
-    if (access(example_file, F_OK) == 0)
+    if (0 == access(example_file, F_OK))
     {
         printf("\tFound example file: %s. Running...\n", example_file);
-        exit_status = challenge.day_function(example_file, result_array);
+        return_status = challenge.day_function(example_file, result_array);
     }
     else
     {
         ERROR_LOG("example file not found");
-        exit_status = EXIT_FAILURE; // Ensure exit status is set even if the
-                                    // file is not found
+        return_status = ERROR_FILE_NOT_FOUND;
     }
 
-    if (EXIT_SUCCESS == exit_status)
+    if (ERROR_SUCCESS == return_status)
     {
         printf("\tPart One: %d\n\tPart Two: %d\n\n",
                result_array[0],
@@ -88,29 +86,28 @@ run_day (DayChallenge challenge)
     }
 
     // check and run the actual file if it exists
-    result_array[0] = 0; // Reset result array for actual file
+    result_array[0] = 0;
     result_array[1] = 0;
 
-    if (access(actual_file, F_OK) == 0)
+    if (0 == access(actual_file, F_OK))
     {
         printf("\tFound actual file: %s. Running...\n", actual_file);
-        exit_status = challenge.day_function(actual_file, result_array);
+        return_status = challenge.day_function(actual_file, result_array);
     }
     else
     {
         ERROR_LOG("actual file not found");
-        exit_status = EXIT_FAILURE; // Ensure exit status is set even if the
-                                    // file is not found
+        return_status = ERROR_FILE_NOT_FOUND;
     }
 
-    if (EXIT_SUCCESS == exit_status)
+    if (ERROR_SUCCESS == return_status)
     {
         printf("\tPart One: %d\n\tPart Two: %d\n\n",
                result_array[0],
                result_array[1]);
     }
 
-    return exit_status;
+    return return_status;
 }
 
 /**
@@ -127,13 +124,12 @@ run_day (DayChallenge challenge)
  * arguments.
  * @param argv Argument vector, an array of strings containing the command-line
  * arguments.
- * @return EXIT_SUCCESS if the program runs successfully, EXIT_FAILURE
- * otherwise.
+ * @return ERROR_SUCCESS on success, or an appropriate error code on failure.
  */
 int
 main (int argc, char *argv[])
 {
-    int exit_status = EXIT_SUCCESS;
+    int return_status = ERROR_SUCCESS;
 
     // array of all available challenges
     DayChallenge challenges[] = {
@@ -151,11 +147,11 @@ main (int argc, char *argv[])
     {
         printf("Running all Advent of Code challenges...\n");
 
-        for (size_t i = 0; i < challenge_count; i++)
+        for (size_t idx = 0; idx < challenge_count; idx++)
         {
-            exit_status = run_day(challenges[i]);
+            return_status = run_day(challenges[idx]);
 
-            if (EXIT_FAILURE == exit_status)
+            if (ERROR_SUCCESS != return_status)
             {
                 break;
             }
@@ -167,32 +163,34 @@ main (int argc, char *argv[])
     {
         ERROR_LOG("invalid argument");
         printf("%s\n", USAGE_GUIDE);
+        return_status = ERROR_INVALID_INPUT;
     }
 
     // run a specific challenge if it exists
     else
     {
         const char *requested_chal = argv[1];
-        int         found          = false;
+        bool        found          = false;
 
-        for (size_t i = 0; i < challenge_count; i++)
+        for (size_t idx = 0; idx < challenge_count; idx++)
         {
-            if (0 == strcmp(requested_chal, challenges[i].day_name))
+            if (0 == strcmp(requested_chal, challenges[idx].day_name))
             {
-                exit_status = run_day(challenges[i]);
-                found       = true;
+                return_status = run_day(challenges[idx]);
+                found         = true;
                 break;
             }
         }
 
-        if (!found)
+        if (false == found)
         {
             ERROR_LOG("invalid argument");
             printf("%s\n", USAGE_GUIDE);
+            return_status = ERROR_INVALID_INPUT;
         }
     }
 
-    return exit_status;
+    return return_status;
 }
 
 /*** end of file ***/

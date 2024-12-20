@@ -1,19 +1,21 @@
+#include "array.h"
 #include "aux.h"
+#include "error.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 /**
- * @file aux.c
- * @brief Supplementary functions to support challenges.
+ * @file array.c
+ * @brief Arrray functions.
  *
- * This file contains functions to initialize, resize, add elements, and destroy
- * an array. The array is dynamically allocated and can store any data type
- * using a `void *` pointer.
+ * This file contains functions handle all array functions. The array
+ * is dynamically allocated and can store any data type using a `void *`
+ * pointer.
  */
 
-#define INITIAL_SIZE 2
+#define ARRAY_INITIAL_SIZE 10
 
 Array *
 array_initialization (void)
@@ -27,10 +29,8 @@ array_initialization (void)
     }
 
     array->idx  = 0;
-    array->max  = INITIAL_SIZE;
-    array->list = calloc(
-        INITIAL_SIZE,
-        sizeof(void *)); /**< Allocating space for pointers to any data type. */
+    array->max  = ARRAY_INITIAL_SIZE;
+    array->list = calloc(ARRAY_INITIAL_SIZE, sizeof(void *));
 
     if (NULL == array->list)
     {
@@ -42,8 +42,7 @@ array_initialization (void)
 
     for (int idx = 0; idx < array->max; idx++)
     {
-        array->list[idx] = NULL; /**< Initialize each element to NULL,
-                                    indicating empty spots. */
+        array->list[idx] = NULL;
     }
 
 EXIT:
@@ -53,7 +52,7 @@ EXIT:
 int
 array_resize (Array *array)
 {
-    int return_status = EXIT_FAILURE;
+    int return_status = ERROR_NULL_POINTER;
 
     if (NULL == array)
     {
@@ -61,24 +60,24 @@ array_resize (Array *array)
     }
 
     int    new_size = array->max * 2;
-    void **new_list = (void **)realloc(
-        array->list,
-        new_size * sizeof(void *)); /**< Casting realloc to `void **`. */
+    void **new_list = (void **)realloc(array->list, new_size * sizeof(void *));
 
     if (NULL == new_list)
     {
         ERROR_LOG("Failed to resize array");
+        return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
 
+    // Initialize new elements to NULL
     for (int idx = array->max; idx < new_size; idx++)
     {
-        new_list[idx] = NULL; /**< Initialize new elements to NULL. */
+        new_list[idx] = NULL;
     }
 
     array->max    = new_size;
     array->list   = new_list;
-    return_status = EXIT_SUCCESS;
+    return_status = ERROR_SUCCESS;
 
 EXIT:
     return return_status;
@@ -91,11 +90,9 @@ array_destroy (Array *array)
     {
         if (NULL != array->list)
         {
-            // Free each element (if needed, based on the type of data stored)
             for (int i = 0; i < array->idx; i++)
             {
-                free(array->list[i]); /**< Free each dynamically allocated
-                                         element. */
+                free(array->list[i]);
             }
 
             free(array->list);
@@ -110,7 +107,7 @@ array_destroy (Array *array)
 int
 array_add (Array *array, const void *ele, size_t ele_size)
 {
-    int return_status = EXIT_FAILURE;
+    int return_status = ERROR_NULL_POINTER;
 
     if (NULL == array)
     {
@@ -122,7 +119,8 @@ array_add (Array *array, const void *ele, size_t ele_size)
     if (array->idx >= array->max)
     {
         return_status = array_resize(array);
-        if (EXIT_SUCCESS != return_status)
+
+        if (ERROR_SUCCESS != return_status)
         {
             ERROR_LOG("Failed to resize array in array_add");
             goto EXIT;
@@ -130,20 +128,50 @@ array_add (Array *array, const void *ele, size_t ele_size)
     }
 
     // Allocate memory for the new element and copy the data
-    array->list[array->idx]
-        = malloc(ele_size); /**< Allocate space for the element. */
+    array->list[array->idx] = calloc(1, ele_size);
 
     if (NULL == array->list[array->idx])
     {
         ERROR_LOG("Failed to allocate memory for new element in array_add");
+        return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
 
-    memcpy(array->list[array->idx],
-           ele,
-           ele_size); /**< Copy the data into the allocated space. */
+    // Copy data into the allocated space
+    memcpy(array->list[array->idx], ele, ele_size);
     array->idx++;
-    return_status = EXIT_SUCCESS;
+    return_status = ERROR_SUCCESS;
+
+EXIT:
+    return return_status;
+}
+
+int
+array_reset (Array *array)
+{
+    int return_status = ERROR_NULL_POINTER;
+
+    if (NULL == array)
+    {
+        ERROR_LOG("Invalid input to array_reset: Array is NULL");
+        goto EXIT;
+    }
+
+    if (NULL != array->list)
+    {
+        for (int i = 0; i < array->idx; i++)
+        {
+            free(array->list[i]);
+            array->list[i] = NULL;
+        }
+
+        array->idx    = 0;
+        return_status = ERROR_SUCCESS;
+    }
+    else
+    {
+        return_status = ERROR_NULL_POINTER;
+    }
 
 EXIT:
     return return_status;

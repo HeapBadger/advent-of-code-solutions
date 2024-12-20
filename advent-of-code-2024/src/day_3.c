@@ -1,5 +1,7 @@
-#include "day_3.h"
+#include "array.h"
 #include "aux.h"
+#include "day_3.h"
+#include "error.h"
 
 #include <ctype.h>
 #include <stdbool.h>
@@ -20,31 +22,33 @@ typedef struct
     bool   b_do_execute;
 } PatternData;
 
-// /* Function Prototypes */
+/* Function Prototypes */
 void         find_pattern(const char *input, PatternData *data);
 bool         matches_pattern(const char *str, int *a, int *b);
 PatternData *patterndata_initialization();
-void         patterndata_destroy();
+void         patterndata_destroy(PatternData *data);
 
 int
 day_3 (const char *filename, int result[2])
 {
-    FILE        *fp                = NULL;
+    FILE        *fptr              = NULL;
     char         line[BUFFER_SIZE] = { 0 };
-    int          return_status     = EXIT_FAILURE;
+    int          return_status     = ERROR_UNKNOWN;
     PatternData *data              = NULL;
 
-    if ((filename == NULL) || (result == NULL))
+    if ((NULL == filename) || (NULL == result))
     {
         ERROR_LOG("Invalid input to day_3");
+        return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }
 
-    fp = fopen(filename, "r");
+    fptr = fopen(filename, "r");
 
-    if (fp == NULL)
+    if (NULL == fptr)
     {
         ERROR_LOG("Unable to open file");
+        return_status = ERROR_FILE_NOT_FOUND;
         goto EXIT;
     }
 
@@ -53,13 +57,14 @@ day_3 (const char *filename, int result[2])
 
     data = patterndata_initialization();
 
-    if (data == NULL)
+    if (NULL == data)
     {
         ERROR_LOG("Unable to initialize PatternData");
+        return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
 
-    while (fgets(line, sizeof(line), fp) != NULL)
+    while (NULL != fgets(line, sizeof(line), fptr))
     {
         find_pattern(line, data);
     }
@@ -82,13 +87,13 @@ day_3 (const char *filename, int result[2])
 
     result[0]     = sum_one;
     result[1]     = sum_two;
-    return_status = EXIT_SUCCESS;
+    return_status = ERROR_SUCCESS;
 
 EXIT:
-    if (fp != NULL)
+    if (NULL != fptr)
     {
-        fclose(fp);
-        fp = NULL;
+        fclose(fptr);
+        fptr = NULL;
     }
 
     patterndata_destroy(data);
@@ -104,7 +109,7 @@ EXIT:
 void
 find_pattern (const char *input, PatternData *data)
 {
-    if ((input == NULL) || (data == NULL))
+    if ((NULL == input) || (NULL == data))
     {
         ERROR_LOG("Invalid input to find_pattern");
         return;
@@ -112,7 +117,7 @@ find_pattern (const char *input, PatternData *data)
 
     const char *current_pos = input;
 
-    while (current_pos != NULL)
+    while (NULL != current_pos)
     {
         const char *next_mul  = strstr(current_pos, "mul(");
         const char *next_do   = strstr(current_pos, "do()");
@@ -121,46 +126,48 @@ find_pattern (const char *input, PatternData *data)
         // Find the nearest match among the patterns
         const char *next_match = next_mul;
 
-        if (next_do != NULL && (next_match == NULL || next_do < next_match))
+        if ((NULL != next_do)
+            && ((NULL == next_match) || (next_do < next_match)))
         {
             next_match = next_do;
         }
 
-        if (next_dont != NULL && (next_match == NULL || next_dont < next_match))
+        if ((NULL != next_dont)
+            && ((NULL == next_match) || (next_dont < next_match)))
         {
             next_match = next_dont;
         }
 
-        if (next_match == NULL)
+        if (NULL == next_match)
         {
             break; // No more matches found
         }
 
         // Process the found match
-        if (strncmp(next_match, "mul(", 4) == 0)
+        if (0 == strncmp(next_match, "mul(", 4))
         {
             int a, b;
             if (matches_pattern(next_match, &a, &b))
             {
-                // printf("(%d, %d) ", a, b);
-                if ((array_add(data->multiplicand, &a, sizeof(int))
-                     == EXIT_FAILURE)
-                    || (array_add(data->multiplier, &b, sizeof(int))
-                        == EXIT_FAILURE)
-                    || (array_add(
-                            data->conditional, &data->b_do_execute, sizeof(int))
-                        == EXIT_FAILURE))
+                if ((ERROR_SUCCESS
+                     != array_add(data->multiplicand, &a, sizeof(int)))
+                    || (ERROR_SUCCESS
+                        != array_add(data->multiplier, &b, sizeof(int)))
+                    || (ERROR_SUCCESS
+                        != array_add(data->conditional,
+                                     &data->b_do_execute,
+                                     sizeof(int))))
                 {
                     ERROR_LOG("Unable to add element to array");
                     break;
                 }
             }
         }
-        else if (strncmp(next_match, "do(", 3) == 0)
+        else if (0 == strncmp(next_match, "do(", 3))
         {
             data->b_do_execute = true; // enable mul()
         }
-        else if (strncmp(next_match, "don't(", 6) == 0)
+        else if (0 == strncmp(next_match, "don't(", 6))
         {
             data->b_do_execute = false; // disable mul()
         }
@@ -182,20 +189,19 @@ find_pattern (const char *input, PatternData *data)
  * @param b Pointer to store the second extracted integer.
  *
  * @return true if the string matches the pattern and integers are
- successfully
- * extracted, false otherwise.
+ * successfully extracted, false otherwise.
  */
 bool
 matches_pattern (const char *str, int *a, int *b)
 {
     bool return_status = false;
 
-    if (str == NULL || a == NULL || b == NULL)
+    if ((NULL == str) || (NULL == a) || (NULL == b))
     {
         goto EXIT;
     }
 
-    if (strncmp(str, "mul(", 4) != 0)
+    if (0 != strncmp(str, "mul(", 4))
     {
         goto EXIT;
     }
@@ -206,7 +212,7 @@ matches_pattern (const char *str, int *a, int *b)
     // Extract the first integer
     *a = (int)strtol(str, &end_ptr, 10);
 
-    if (end_ptr == str || *end_ptr != ',')
+    if ((end_ptr == str) || (',' != *end_ptr))
     {
         goto EXIT; // No valid integer or missing ','
     }
@@ -216,7 +222,7 @@ matches_pattern (const char *str, int *a, int *b)
     // Extract the second integer
     *b = (int)strtol(str, &end_ptr, 10);
 
-    if (end_ptr == str || *end_ptr != ')')
+    if ((end_ptr == str) || (')' != *end_ptr))
     {
         goto EXIT; // No valid integer or missing ')'
     }
@@ -240,7 +246,7 @@ patterndata_initialization ()
 
     data = (PatternData *)calloc(1, sizeof(PatternData));
 
-    if (data == NULL)
+    if (NULL == data)
     {
         ERROR_LOG("Failed to allocate memory for PatternData");
         goto EXIT;
@@ -255,8 +261,8 @@ patterndata_initialization ()
     data->multiplicand = array_initialization();
     data->multiplier   = array_initialization();
 
-    if ((data->conditional == NULL) || (data->multiplicand == NULL)
-        || (data->multiplier == NULL))
+    if ((NULL == data->conditional) || (NULL == data->multiplicand)
+        || (NULL == data->multiplier))
     {
         patterndata_destroy(data);
         data = NULL;
@@ -275,7 +281,7 @@ EXIT:
 void
 patterndata_destroy (PatternData *data)
 {
-    if (data != NULL)
+    if (NULL != data)
     {
         array_destroy(data->conditional);
         array_destroy(data->multiplicand);

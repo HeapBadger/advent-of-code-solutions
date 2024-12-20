@@ -37,7 +37,7 @@
  *
  * @param filename Path to the input file.
  * @param result Array to store the results (size 2).
- * @return int EXIT_SUCCESS on success, otherwise EXIT_FAILURE.
+ * @return ERROR_SUCCESS on success, or an appropriate error code on failure.
  */
 int day_1(const char *filename, int result[2]);
 

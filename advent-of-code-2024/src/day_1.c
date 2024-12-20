@@ -1,5 +1,7 @@
-#include "day_1.h"
+#include "array.h"
 #include "aux.h"
+#include "day_1.h"
+#include "error.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,56 +20,62 @@ void       bubble_sort(Array *array);
 int
 day_1 (const char *filename, int result[2])
 {
-    int    return_status = EXIT_FAILURE;
+    int    return_status = ERROR_UNKNOWN;
     Array *array_one     = NULL;
     Array *array_two     = NULL;
-    FILE  *fp            = NULL;
+    FILE  *fptr          = NULL;
 
-    if ((filename == NULL) || (result == NULL))
+    if ((NULL == filename) || (NULL == result))
     {
         ERROR_LOG("Invalid input to day_1");
+        return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }
 
-    fp = fopen(filename, "r");
+    fptr = fopen(filename, "r");
 
-    if (fp == NULL)
+    if (NULL == fptr)
     {
         ERROR_LOG("Unable to open file");
+        return_status = ERROR_FILE_NOT_FOUND;
         goto EXIT;
     }
 
     array_one = array_initialization();
 
-    if (array_one == NULL)
+    if (NULL == array_one)
     {
-        ERROR_LOG("Unable to initialize array_one");
+        ERROR_LOG("Unable to initialize array");
+        return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
 
     array_two = array_initialization();
 
-    if (array_two == NULL)
+    if (NULL == array_two)
     {
-        ERROR_LOG("Unable to initialize array_two");
+        ERROR_LOG("Unable to initialize array");
+        return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
 
     char line[BUFFER_SIZE] = { 0 };
 
-    while (fgets(line, sizeof(line), fp) != NULL)
+    while (NULL != fgets(line, sizeof(line), fptr))
     {
-        int digits[2] = { DNE, DNE };
+        int digits[2] = { ERROR_ELEMENT_NOT_FOUND, ERROR_ELEMENT_NOT_FOUND };
 
-        if (extract_digits(line, digits) == EXIT_SUCCESS)
+        if (ERROR_SUCCESS == extract_digits(line, digits))
         {
             array_add(array_one, &digits[0], sizeof(int));
             array_add(array_two, &digits[1], sizeof(int));
         }
+        else
+        {
+            ERROR_LOG("Unable to extract digits");
+            goto EXIT;
+        }
     }
-
-    fclose(fp);
-    fp = NULL;
 
     // Part 1: Compute sum of absolute differences
     bubble_sort(array_one);
@@ -92,13 +100,13 @@ day_1 (const char *filename, int result[2])
     }
 
     result[1]     = sum;
-    return_status = EXIT_SUCCESS;
+    return_status = ERROR_SUCCESS;
 
 EXIT:
-    if (NULL != fp)
+    if (NULL != fptr)
     {
-        fclose(fp);
-        fp = NULL;
+        fclose(fptr);
+        fptr = NULL;
     }
 
     array_destroy(array_one);
@@ -115,7 +123,7 @@ EXIT:
 void
 bubble_sort (Array *array)
 {
-    if (array == NULL || array->list == NULL || array->idx <= 0)
+    if ((NULL == array) || (NULL == array->list) || (0 >= array->idx))
     {
         ERROR_LOG("Invalid array or size");
         return;
@@ -126,11 +134,8 @@ bubble_sort (Array *array)
     {
         for (int j = 0; j < i; j++)
         {
-            // Cast array elements to int* and dereference to compare actual
-            // values
             if (*(int *)array->list[j] > *(int *)array->list[j + 1])
             {
-                // Swap the elements
                 void *tmp          = array->list[j];
                 array->list[j]     = array->list[j + 1];
                 array->list[j + 1] = tmp;
@@ -153,15 +158,16 @@ bubble_sort (Array *array)
 static int
 similarity_score (int num, void **array, int size)
 {
-    if ((num < 0) || (array == NULL) || (size <= 0))
+    if ((0 > num) || (NULL == array) || (0 >= size))
     {
         return 0;
     }
 
     int count = 0;
+
     for (int idx = 0; idx < size; idx++)
     {
-        if (*(int *)array[idx] == DNE)
+        if (ERROR_ELEMENT_NOT_FOUND == *(int *)array[idx])
         {
             continue;
         }
@@ -184,23 +190,24 @@ similarity_score (int num, void **array, int size)
  *
  * @param line Input line of text.
  * @param digits Array to store the extracted integers (size 2).
- * @return int EXIT_SUCCESS if successful, otherwise EXIT_FAILURE.
+ * @return ERROR_SUCCESS on success, or an appropriate error code on failure.
  */
 static int
 extract_digits (const char *line, int digits[2])
 {
-    if ((line == NULL) || (digits == NULL))
+    if ((NULL == line) || (NULL == digits))
     {
         ERROR_LOG("Invalid input to extract_digits");
-        return EXIT_FAILURE;
+        return ERROR_INVALID_INPUT;
     }
 
     if (sscanf(line, "%d %d", &digits[0], &digits[1]) != 2)
     {
         ERROR_LOG("Failed to parse integers");
-        return EXIT_FAILURE;
+        return ERROR_UNKNOWN;
     }
-    return EXIT_SUCCESS;
+
+    return ERROR_SUCCESS;
 }
 
 /*** end of file ***/

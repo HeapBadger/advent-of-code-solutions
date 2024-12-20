@@ -32,7 +32,7 @@
  *
  * @param filename Input filename.
  * @param result Solution to part 1 and 2.
- * @return Exit status.
+ * @return ERROR_SUCCESS on success, or an appropriate error code on failure.
  */
 int day_2(const char *filename, int result[2]);
 

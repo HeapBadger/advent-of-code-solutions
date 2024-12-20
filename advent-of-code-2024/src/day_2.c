@@ -1,5 +1,7 @@
-#include "day_2.h"
+#include "array.h"
 #include "aux.h"
+#include "day_2.h"
+#include "error.h"
 
 #include <ctype.h>
 #include <stdbool.h>
@@ -13,71 +15,71 @@
  */
 
 /* Function Prototypes */
-void extract_digits(const char *line, Array *record);
-bool b_is_stable(void **record, int size);
-bool b_is_stable_with_damper(void **record, int size);
+static int extract_digits(const char *line, Array *record);
+bool       b_is_stable(void **record, int size);
+bool       b_is_stable_with_damper(void **record, int size);
 
 int
 day_2 (const char *filename, int result[2])
 {
-    FILE  *fp                = NULL;
+    FILE  *fptr              = NULL;
     char   line[BUFFER_SIZE] = { 0 };
-    int    return_status     = EXIT_FAILURE;
+    int    return_status     = ERROR_UNKNOWN;
     Array *record            = NULL;
 
-    if ((filename == NULL) || (result == NULL))
+    if ((NULL == filename) || (NULL == result))
     {
         ERROR_LOG("Invalid input to day_2");
+        return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }
 
-    fp = fopen(filename, "r");
+    fptr = fopen(filename, "r");
 
-    if (fp == NULL)
+    if (NULL == fptr)
     {
         ERROR_LOG("Unable to open file");
+        return_status = ERROR_FILE_NOT_FOUND;
         goto EXIT;
     }
 
     record = array_initialization();
 
-    if (record == NULL)
+    if (NULL == record)
     {
+        ERROR_LOG("Unable to initialize array");
+        return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
 
     int sum_one = 0;
     int sum_two = 0;
 
-    while (fgets(line, sizeof(line), fp) != NULL)
+    while (NULL != fgets(line, sizeof(line), fptr))
     {
         // extract record from line
-        extract_digits(line, record);
-
-        // add stability scores
-        sum_one += b_is_stable(record->list, record->idx); // part one
-        sum_two
-            += b_is_stable_with_damper(record->list, record->idx); // part two
-
-        // reset array for next record
-        for (int idx = 0; idx < record->idx; idx++)
+        if (ERROR_SUCCESS != extract_digits(line, record))
         {
-            free(record->list[idx]);
-            record->list[idx] = NULL;
+            goto EXIT;
         }
 
-        record->idx = 0;
+        // add stability scores
+        sum_one += b_is_stable(record->list, record->idx);
+        sum_two += b_is_stable_with_damper(record->list, record->idx);
+
+        // reset array for next record
+        array_reset(record);
     }
 
     result[0]     = sum_one;
     result[1]     = sum_two;
-    return_status = EXIT_SUCCESS;
+    return_status = ERROR_SUCCESS;
 
 EXIT:
-    if (fp != NULL)
+    if (NULL != fptr)
     {
-        fclose(fp);
-        fp = NULL;
+        fclose(fptr);
+        fptr = NULL;
     }
 
     array_destroy(record);
@@ -88,30 +90,36 @@ EXIT:
  * @brief Extracts digits from a string and stores them in an Array.
  *
  * This function loops through each character in the line. If a digit is
- found,
- * it is stored in the Array. The Array's index is incremented for each
- digit.
+ * found, it is stored in the Array. The Array's index is incremented
+ * for each digit.
  *
  * @param line Pointer to a null-terminated string containing digits.
  * @param record Pointer to the Array structure where digits will be stored.
+ * @return ERROR_SUCCESS on success, or an appropriate error code on failure.
  */
-void
+static int
 extract_digits (const char *line, Array *record)
 {
-    if (line == NULL || record == NULL)
+    int return_status = ERROR_UNKNOWN;
+
+    if ((NULL == line) || (NULL == record))
     {
         ERROR_LOG("Invalid input to extract_digits");
-        return;
+        return_status = ERROR_INVALID_INPUT;
+        goto EXIT;
     }
 
-    while (*line != '\0')
+    while ('\0' != *line)
     {
         char *endline;
         int   ele = (int)strtol(line, &endline, 10);
 
-        if (array_add(record, &ele, sizeof(int)) == EXIT_FAILURE)
+        return_status = array_add(record, &ele, sizeof(int));
+
+        if (ERROR_SUCCESS != return_status)
         {
-            return;
+            ERROR_LOG("Unable to add element to array");
+            goto EXIT;
         }
 
         // Check if no valid number was found
@@ -125,7 +133,8 @@ extract_digits (const char *line, Array *record)
             else
             {
                 ERROR_LOG("Invalid character in input");
-                return;
+                return_status = ERROR_INVALID_INPUT;
+                goto EXIT;
             }
         }
 
@@ -139,11 +148,9 @@ extract_digits (const char *line, Array *record)
         }
     }
 
-    return;
+EXIT:
+    return return_status;
 }
-
-#include <stdbool.h>
-#include <stdlib.h>
 
 /**
  * @brief Checks the stability of a sequence of integers.
@@ -165,7 +172,7 @@ b_is_stable (void **record, int size)
     bool pos    = false;
     bool neg    = false;
 
-    if (record == NULL || size <= 1)
+    if ((NULL == record) || (1 >= size))
     {
         return stable;
     }
@@ -175,14 +182,14 @@ b_is_stable (void **record, int size)
         int diff = *(int *)record[idx] - *(int *)record[idx + 1];
 
         // Check if the difference is within the valid range
-        if (abs(diff) < 1 || abs(diff) > 3)
+        if (1 > abs(diff) || 3 < abs(diff))
         {
             stable = false;
             break;
         }
 
         // Track if the direction has changed
-        if (diff > 0)
+        if (0 < diff)
         {
             pos = true;
         }
@@ -192,7 +199,7 @@ b_is_stable (void **record, int size)
         }
 
         // Unstable if direction increases and decreases
-        if ((pos == true) && (neg == true))
+        if ((true == pos) && (true == neg))
         {
             stable = false;
             break;
@@ -209,8 +216,7 @@ b_is_stable (void **record, int size)
  * @param record Pointer to an array of integers representing the sequence.
  * @param size The size of the array.
  * @return `true` if the sequence is stable (either initially or after
- removing
- * one element), `false` otherwise.
+ * removing one element), `false` otherwise.
  */
 bool
 b_is_stable_with_damper (void **record, int size)
@@ -218,7 +224,7 @@ b_is_stable_with_damper (void **record, int size)
     bool   stable     = false;
     void **mod_record = NULL;
 
-    if (record == NULL || size <= 1)
+    if ((NULL == record) || (1 >= size))
     {
         goto EXIT;
     }
@@ -233,7 +239,7 @@ b_is_stable_with_damper (void **record, int size)
     // Next, attempt to remove an element and check stability
     mod_record = calloc(size - 1, sizeof(void *));
 
-    if (mod_record == NULL)
+    if (NULL == mod_record)
     {
         ERROR_LOG("Failed to allocate memroy for mod_record");
         goto EXIT;
@@ -265,7 +271,7 @@ b_is_stable_with_damper (void **record, int size)
     }
 
 EXIT:
-    if (mod_record != NULL)
+    if (NULL != mod_record)
     {
         free(mod_record);
         mod_record = NULL;
