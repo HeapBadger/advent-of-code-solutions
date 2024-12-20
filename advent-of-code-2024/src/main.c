@@ -1,4 +1,3 @@
-#include "array.h"
 #include "aux.h"
 #include "day_1.h"
 #include "day_2.h"

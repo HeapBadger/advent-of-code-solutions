@@ -18,7 +18,7 @@
 #define ARRAY_INITIAL_SIZE 10
 
 Array *
-array_initialization (void)
+array_initialization (ElementType ele_type)
 {
     Array *array = calloc(1, sizeof(Array));
 
@@ -28,9 +28,10 @@ array_initialization (void)
         goto EXIT;
     }
 
-    array->idx  = 0;
-    array->max  = ARRAY_INITIAL_SIZE;
-    array->list = calloc(ARRAY_INITIAL_SIZE, sizeof(void *));
+    array->idx      = 0;
+    array->ele_type = ele_type;
+    array->max      = ARRAY_INITIAL_SIZE;
+    array->list     = calloc(ARRAY_INITIAL_SIZE, sizeof(void *));
 
     if (NULL == array->list)
     {
@@ -105,7 +106,7 @@ array_destroy (Array *array)
 }
 
 int
-array_add (Array *array, const void *ele, size_t ele_size)
+array_add (Array *array, const void *ele)
 {
     int return_status = ERROR_NULL_POINTER;
 
@@ -125,6 +126,28 @@ array_add (Array *array, const void *ele, size_t ele_size)
             ERROR_LOG("Failed to resize array in array_add");
             goto EXIT;
         }
+    }
+
+    size_t ele_size;
+
+    switch (array->ele_type)
+    {
+        case TYPE_INT:
+            ele_size = sizeof(int);
+            break;
+        case TYPE_FLOAT:
+            ele_size = sizeof(float);
+            break;
+        case TYPE_DOUBLE:
+            ele_size = sizeof(double);
+            break;
+        case TYPE_CHAR:
+            ele_size = sizeof(char);
+            break;
+        default:
+            ERROR_LOG("Unsupported element type");
+            return_status = ERROR_INVALID_INPUT;
+            goto EXIT;
     }
 
     // Allocate memory for the new element and copy the data
@@ -175,6 +198,107 @@ array_reset (Array *array)
 
 EXIT:
     return return_status;
+}
+
+int
+array_copy (Array *src, Array *dst)
+{
+    int return_status = ERROR_NULL_POINTER;
+
+    if ((NULL == src) || (NULL == dst))
+    {
+        ERROR_LOG("Cannot have null pointers as input");
+        goto EXIT;
+    }
+
+    if ((NULL == src->list) || (NULL != dst->list))
+    {
+        ERROR_LOG("Cannot have null pointers as input lists");
+        goto EXIT;
+    }
+
+    if (src->ele_type != dst->ele_type)
+    {
+        ERROR_LOG("Arrays must have matching data types");
+        return_status = ERROR_INVALID_INPUT;
+        goto EXIT;
+    }
+
+    // reset destination list
+    return_status = array_reset(dst);
+
+    if (ERROR_SUCCESS != return_status)
+    {
+        ERROR_LOG("Unable to reset destination array");
+        goto EXIT;
+    }
+
+    // Copy each element from src to dst using array_add
+    for (int idx = 0; idx < src->idx; idx++)
+    {
+        return_status = array_add(dst, src->list[idx]);
+
+        if (ERROR_SUCCESS != return_status)
+        {
+            ERROR_LOG("Failed to add element to destination array");
+            break;
+        }
+    }
+
+EXIT:
+    return return_status;
+}
+
+void
+array_print(Array *array)
+{
+    if (NULL == array)
+    {
+        ERROR_LOG("Invalid input to array_print: Array is NULL");
+        return;
+    }
+
+    if (NULL == array->list)
+    {
+        ERROR_LOG("Invalid input to array_print: Array list is NULL");
+        return;
+    }
+
+    for (int idx = 0; idx < array->idx; idx++)
+    {
+        if (NULL == array->list[idx])
+        {
+            printf("[NULL]");
+        }
+        else
+        {
+            switch (array->ele_type)
+            {
+                case TYPE_INT:
+                    printf("%d", *(int *)array->list[idx]);
+                    break;
+                case TYPE_FLOAT:
+                    printf("%f", *(float *)array->list[idx]);
+                    break;
+                case TYPE_DOUBLE:
+                    printf("%lf", *(double *)array->list[idx]);
+                    break;
+                case TYPE_CHAR:
+                    printf("%c", *(char *)array->list[idx]);
+                    break;
+                default:
+                    printf("[UNKNOWN TYPE]");
+                    break;
+            }
+        }
+
+        if (idx < array->idx - 1)
+        {
+            printf(" ");
+        }
+    }
+
+    printf("\n");
 }
 
 /*** end of file ***/

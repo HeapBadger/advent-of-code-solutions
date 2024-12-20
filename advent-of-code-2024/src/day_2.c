@@ -43,7 +43,7 @@ day_2 (const char *filename, int result[2])
         goto EXIT;
     }
 
-    record = array_initialization();
+    record = array_initialization(TYPE_INT);
 
     if (NULL == record)
     {
@@ -114,7 +114,7 @@ extract_digits (const char *line, Array *record)
         char *endline;
         int   ele = (int)strtol(line, &endline, 10);
 
-        return_status = array_add(record, &ele, sizeof(int));
+        return_status = array_add(record, &ele);
 
         if (ERROR_SUCCESS != return_status)
         {

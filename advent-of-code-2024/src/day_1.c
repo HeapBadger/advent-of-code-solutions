@@ -41,7 +41,7 @@ day_1 (const char *filename, int result[2])
         goto EXIT;
     }
 
-    array_one = array_initialization();
+    array_one = array_initialization(TYPE_INT);
 
     if (NULL == array_one)
     {
@@ -50,7 +50,7 @@ day_1 (const char *filename, int result[2])
         goto EXIT;
     }
 
-    array_two = array_initialization();
+    array_two = array_initialization(TYPE_INT);
 
     if (NULL == array_two)
     {
@@ -67,8 +67,8 @@ day_1 (const char *filename, int result[2])
 
         if (ERROR_SUCCESS == extract_digits(line, digits))
         {
-            array_add(array_one, &digits[0], sizeof(int));
-            array_add(array_two, &digits[1], sizeof(int));
+            array_add(array_one, &digits[0]);
+            array_add(array_two, &digits[1]);
         }
         else
         {

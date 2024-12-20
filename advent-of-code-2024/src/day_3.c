@@ -150,13 +150,11 @@ find_pattern (const char *input, PatternData *data)
             if (matches_pattern(next_match, &a, &b))
             {
                 if ((ERROR_SUCCESS
-                     != array_add(data->multiplicand, &a, sizeof(int)))
+                     != array_add(data->multiplicand, &a))
                     || (ERROR_SUCCESS
-                        != array_add(data->multiplier, &b, sizeof(int)))
+                        != array_add(data->multiplier, &b))
                     || (ERROR_SUCCESS
-                        != array_add(data->conditional,
-                                     &data->b_do_execute,
-                                     sizeof(int))))
+                        != array_add(data->conditional, &data->b_do_execute)))
                 {
                     ERROR_LOG("Unable to add element to array");
                     break;
@@ -257,9 +255,9 @@ patterndata_initialization ()
     data->multiplicand = NULL;
     data->multiplier   = NULL;
 
-    data->conditional  = array_initialization();
-    data->multiplicand = array_initialization();
-    data->multiplier   = array_initialization();
+    data->conditional  = array_initialization(TYPE_INT);
+    data->multiplicand = array_initialization(TYPE_INT);
+    data->multiplier   = array_initialization(TYPE_INT);
 
     if ((NULL == data->conditional) || (NULL == data->multiplicand)
         || (NULL == data->multiplier))
