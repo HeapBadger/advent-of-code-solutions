@@ -250,7 +250,7 @@ EXIT:
 }
 
 void
-array_print(Array *array)
+array_print (Array *array)
 {
     if (NULL == array)
     {

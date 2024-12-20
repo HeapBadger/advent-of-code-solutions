@@ -149,10 +149,8 @@ find_pattern (const char *input, PatternData *data)
             int a, b;
             if (matches_pattern(next_match, &a, &b))
             {
-                if ((ERROR_SUCCESS
-                     != array_add(data->multiplicand, &a))
-                    || (ERROR_SUCCESS
-                        != array_add(data->multiplier, &b))
+                if ((ERROR_SUCCESS != array_add(data->multiplicand, &a))
+                    || (ERROR_SUCCESS != array_add(data->multiplier, &b))
                     || (ERROR_SUCCESS
                         != array_add(data->conditional, &data->b_do_execute)))
                 {
