@@ -27,8 +27,8 @@ day_1 (const char *filename, int result[2])
 
     if ((NULL == filename) || (NULL == result))
     {
-        ERROR_LOG("Invalid input to day_1: filename or result are NULL");
-        return_status = ERROR_INVALID_INPUT;
+        ERROR_LOG("Invalid input to day_1: one or more inputs are NULL.");
+        return_status = ERROR_NULL_POINTER;
         goto EXIT;
     }
 
@@ -125,8 +125,7 @@ bubble_sort (Array *array)
 {
     if ((NULL == array) || (NULL == array->list) || (0 >= array->idx))
     {
-        ERROR_LOG(
-            "Invalid input to bubble_sort: array or array->list are NULL");
+        ERROR_LOG("Invalid input to bubble_sort: one or more inputs are NULL.");
         return;
     }
 
@@ -198,8 +197,8 @@ extract_digits (const char *line, int digits[2])
 {
     if ((NULL == line) || (NULL == digits))
     {
-        ERROR_LOG("Invalid input to extract_digits: line or digits are NULL");
-        return ERROR_INVALID_INPUT;
+        ERROR_LOG("Invalid input to extract_digits: one or more inputs are NULL.");
+        return ERROR_NULL_POINTER;
     }
 
     if (sscanf(line, "%d %d", &digits[0], &digits[1]) != 2)

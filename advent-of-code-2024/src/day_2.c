@@ -29,8 +29,8 @@ day_2 (const char *filename, int result[2])
 
     if ((NULL == filename) || (NULL == result))
     {
-        ERROR_LOG("Invalid input to day_2: filename or result are NULL");
-        return_status = ERROR_INVALID_INPUT;
+        ERROR_LOG("Invalid input to day_2: one or more inputs are NULL.");
+        return_status = ERROR_NULL_POINTER;
         goto EXIT;
     }
 
@@ -104,8 +104,8 @@ extract_digits (const char *line, Array *record)
 
     if ((NULL == line) || (NULL == record))
     {
-        ERROR_LOG("Invalid input to extract_digits: line or record are NULL");
-        return_status = ERROR_INVALID_INPUT;
+        ERROR_LOG("Invalid input to extract_digits: one or more inputs are NULL.");
+        return_status = ERROR_NULL_POINTER;
         goto EXIT;
     }
 
@@ -241,7 +241,7 @@ b_is_stable_with_damper (void **record, int size)
 
     if (NULL == mod_record)
     {
-        ERROR_LOG("Invalid input to calloc: mod_record is NULL");
+        ERROR_LOG("Failed calloc: unable to allocate memory");
         goto EXIT;
     }
 

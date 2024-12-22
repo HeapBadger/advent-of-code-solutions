@@ -27,7 +27,7 @@ array_initialization (ElementType ele_type)
 
     if (NULL == array)
     {
-        ERROR_LOG("Failed to allocate memory for Array");
+        ERROR_LOG("Failed calloc: unable to allocate memory");
         goto EXIT;
     }
 
@@ -38,7 +38,7 @@ array_initialization (ElementType ele_type)
 
     if (NULL == array->list)
     {
-        ERROR_LOG("Failed to allocate memory for Array");
+        ERROR_LOG("Failed calloc: unable to allocate memory");
         free(array);
         array = NULL;
         goto EXIT;
@@ -69,6 +69,7 @@ array_resize (Array *array)
 
     if (NULL == array)
     {
+        ERROR_LOG("Invalid input to array_resize: input is NULL");
         goto EXIT;
     }
 
@@ -124,7 +125,7 @@ array_add (Array *array, const void *ele)
 
     if (NULL == array)
     {
-        ERROR_LOG("Invalid input to array_add: array is NULL");
+        ERROR_LOG("Invalid input to array_add: input is NULL");
         goto EXIT;
     }
 
@@ -191,7 +192,7 @@ array_reset (Array *array)
 
     if (NULL == array)
     {
-        ERROR_LOG("Invalid input to array_reset: array is NULL");
+        ERROR_LOG("Invalid input to array_reset: input is NULL");
         goto EXIT;
     }
 
@@ -222,15 +223,13 @@ array_copy (Array *src, Array *dst)
 
     if ((NULL == src) || (NULL == dst))
     {
-        ERROR_LOG("Invalid input to array_copy: arrays are NULL");
+        ERROR_LOG("Invalid input to array_copy: one or more inputs are NULL");
         goto EXIT;
     }
 
     if (src->ele_type != dst->ele_type)
     {
-        ERROR_LOG(
-            "Invalid input to array_copy: arrays must have matching data "
-            "types");
+        ERROR_LOG("Invalid input to array_copy: arrays must have matching types");
         return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }
@@ -266,13 +265,13 @@ array_print (Array *array)
 {
     if (NULL == array)
     {
-        ERROR_LOG("Invalid input to array_print: array is NULL");
+        ERROR_LOG("Invalid input to array_print: input is NULL");
         return;
     }
 
     if (NULL == array->list)
     {
-        ERROR_LOG("Invalid input to array_print: array list is NULL");
+        ERROR_LOG("Invalid input to array_print: input is NULL");
         return;
     }
 
