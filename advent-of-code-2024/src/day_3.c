@@ -59,7 +59,8 @@ day_3 (const char *filename, int result[2])
 
     if (NULL == data)
     {
-        ERROR_LOG("Failed patterndata_initialization: unable to allocate memory");
+        ERROR_LOG(
+            "Failed patterndata_initialization: unable to allocate memory");
         return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
@@ -154,7 +155,8 @@ find_pattern (const char *input, PatternData *data)
                     || (ERROR_SUCCESS
                         != array_add(data->conditional, &data->b_do_execute)))
                 {
-                    ERROR_LOG("Failed array_add: unable to add element to array");
+                    ERROR_LOG(
+                        "Failed array_add: unable to add element to array");
                     break;
                 }
             }

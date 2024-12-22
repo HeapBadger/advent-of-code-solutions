@@ -125,7 +125,8 @@ bubble_sort (Array *array)
 {
     if ((NULL == array) || (NULL == array->list) || (0 >= array->idx))
     {
-        ERROR_LOG("Invalid input to bubble_sort: array or array->list are NULL");
+        ERROR_LOG(
+            "Invalid input to bubble_sort: array or array->list are NULL");
         return;
     }
 

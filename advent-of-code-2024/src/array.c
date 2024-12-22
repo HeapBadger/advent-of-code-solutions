@@ -18,7 +18,7 @@
 #define ARRAY_INITIAL_SIZE 10
 
 /* Function Prototypes */
-static int array_resize (Array *array);
+static int array_resize(Array *array);
 
 Array *
 array_initialization (ElementType ele_type)
@@ -156,6 +156,9 @@ array_add (Array *array, const void *ele)
         case TYPE_CHAR:
             ele_size = sizeof(char);
             break;
+        case TYPE_INT_PTR:
+            ele_size = sizeof(int *);
+            break;
         default:
             ERROR_LOG("Failed element type enumeration: unsupported type");
             return_status = ERROR_INVALID_INPUT;
@@ -225,7 +228,9 @@ array_copy (Array *src, Array *dst)
 
     if (src->ele_type != dst->ele_type)
     {
-        ERROR_LOG("Invalid input to array_copy: arrays must have matching data types");
+        ERROR_LOG(
+            "Invalid input to array_copy: arrays must have matching data "
+            "types");
         return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }
@@ -246,7 +251,8 @@ array_copy (Array *src, Array *dst)
 
         if (ERROR_SUCCESS != return_status)
         {
-            ERROR_LOG("Failed array_add: unable to add element to destination array");
+            ERROR_LOG(
+                "Failed array_add: unable to add element to destination array");
             break;
         }
     }
@@ -291,6 +297,9 @@ array_print (Array *array)
                     break;
                 case TYPE_CHAR:
                     printf("%c", *(char *)array->list[idx]);
+                    break;
+                case TYPE_INT_PTR:
+                    printf("[POINTER TYPE]");
                     break;
                 default:
                     printf("[UNKNOWN TYPE]");

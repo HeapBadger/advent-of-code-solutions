@@ -38,7 +38,9 @@ main (void)
     retval = CU_initialize_registry();
     if (CUE_SUCCESS != retval)
     {
-        ERROR_LOG("Failed CU_initialize_registry: unable to initialize CUnit registry");
+        ERROR_LOG(
+            "Failed CU_initialize_registry: unable to initialize CUnit "
+            "registry");
         goto CLEANUP;
     }
 

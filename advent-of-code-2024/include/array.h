@@ -19,10 +19,11 @@
  */
 typedef enum
 {
-    TYPE_INT,    /**< Integer type */
-    TYPE_FLOAT,  /**< Float type */
-    TYPE_DOUBLE, /**< Double type */
-    TYPE_CHAR,   /**< Character type */
+    TYPE_INT,     /**< Integer type */
+    TYPE_FLOAT,   /**< Float type */
+    TYPE_DOUBLE,  /**< Double type */
+    TYPE_CHAR,    /**< Character type */
+    TYPE_INT_PTR, /**< Pointer type */
 } ElementType;
 
 /**
