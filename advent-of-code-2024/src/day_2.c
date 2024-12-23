@@ -104,7 +104,8 @@ extract_digits (const char *line, Array *record)
 
     if ((NULL == line) || (NULL == record))
     {
-        ERROR_LOG("Invalid input to extract_digits: one or more inputs are NULL.");
+        ERROR_LOG(
+            "Invalid input to extract_digits: one or more inputs are NULL.");
         return_status = ERROR_NULL_POINTER;
         goto EXIT;
     }

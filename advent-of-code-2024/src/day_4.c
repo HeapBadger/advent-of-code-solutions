@@ -29,12 +29,23 @@
 static int  part_one(Table *p_table, Array *p_found, const char *line);
 static int  part_two(Table *p_table, Array *p_found, const char *p_line);
 static int  table_rotate(Table *p_table, const char *p_data);
-static int  table_search_frontback(Table *p_table, Array *p_found, const char *p_word);
-static int  table_search_updown(Table *p_table, Array *p_found, const char *p_word);
-static int  table_search_diagonal(Table *p_table, Array *p_found, const char *p_word);
-static int  table_search_row(Table *p_table, Array *p_found, int row, const char *p_word, const int dir_range[2]);
-static bool is_word_found(Table *table, const char *p_word, int row, int col, int dx, int dy);
-static int  count_overlaps(Array *p_array);
+static int  table_search_frontback(Table      *p_table,
+                                   Array      *p_found,
+                                   const char *p_word);
+static int  table_search_updown(Table      *p_table,
+                                Array      *p_found,
+                                const char *p_word);
+static int  table_search_diagonal(Table      *p_table,
+                                  Array      *p_found,
+                                  const char *p_word);
+static int  table_search_row(Table      *p_table,
+                             Array      *p_found,
+                             int         row,
+                             const char *p_word,
+                             const int   dir_range[2]);
+static bool is_word_found(
+    Table *table, const char *p_word, int row, int col, int dx, int dy);
+static int count_overlaps(Array *p_array);
 
 int
 day_4 (const char *filename, int result[2])
@@ -118,17 +129,18 @@ EXIT:
 }
 
 /**
- * @brief Processes the first part of the challenge by rotating the table and searching for
- * all instances of the word "XMAS"
+ * @brief Processes the first part of the challenge by rotating the table and
+ * searching for all instances of the word "XMAS"
  *
  * @param p_table Pointer to the Table structure to be processed.
- * @param p_found Pointer to the Array structure that stores the coordinates of found words.
+ * @param p_found Pointer to the Array structure that stores the coordinates of
+ * found words.
  * @param p_line  Pointer to the input line to be processed.
  *
  * @return ERROR_SUCCESS on success, or an appropriate error code on failure.
  */
 static int
-part_one(Table *p_table, Array *p_found, const char *line)
+part_one (Table *p_table, Array *p_found, const char *line)
 {
     int status = table_rotate(p_table, line);
 
@@ -150,7 +162,8 @@ part_one(Table *p_table, Array *p_found, const char *line)
 
     if (ERROR_SUCCESS != status)
     {
-        ERROR_LOG("Failed table_search_frontback: unable to search table for word");
+        ERROR_LOG(
+            "Failed table_search_frontback: unable to search table for word");
         goto EXIT;
     }
 
@@ -158,7 +171,8 @@ part_one(Table *p_table, Array *p_found, const char *line)
 
     if (ERROR_SUCCESS != status)
     {
-        ERROR_LOG("Failed table_search_updown: unable to search table for word");
+        ERROR_LOG(
+            "Failed table_search_updown: unable to search table for word");
         goto EXIT;
     }
 
@@ -166,7 +180,8 @@ part_one(Table *p_table, Array *p_found, const char *line)
 
     if (ERROR_SUCCESS != status)
     {
-        ERROR_LOG("Failed table_search_diagonal: unable to search table for word");
+        ERROR_LOG(
+            "Failed table_search_diagonal: unable to search table for word");
         goto EXIT;
     }
 
@@ -175,17 +190,18 @@ EXIT:
 }
 
 /**
- * @brief Processes the second part of the challenge by rotating the table and searching for
- * for diagonal instances of "MAS"
+ * @brief Processes the second part of the challenge by rotating the table and
+ * searching for for diagonal instances of "MAS"
  *
  * @param p_table Pointer to the Table structure to be processed.
- * @param p_found Pointer to the Array structure that stores the coordinates of found words.
+ * @param p_found Pointer to the Array structure that stores the coordinates of
+ * found words.
  * @param p_line  Pointer to the input line to be processed.
  *
  * @return ERROR_SUCCESS on success, or an appropriate error code on failure.
  */
-static int 
-part_two(Table *p_table, Array *p_found, const char *p_line)
+static int
+part_two (Table *p_table, Array *p_found, const char *p_line)
 {
     int status = table_rotate(p_table, p_line);
 
@@ -207,7 +223,8 @@ part_two(Table *p_table, Array *p_found, const char *p_line)
 
     if (ERROR_SUCCESS != status)
     {
-        ERROR_LOG("Failed table_search_diagonal: unable to search table for word");
+        ERROR_LOG(
+            "Failed table_search_diagonal: unable to search table for word");
         goto EXIT;
     }
 

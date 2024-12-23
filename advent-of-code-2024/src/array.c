@@ -229,7 +229,8 @@ array_copy (Array *src, Array *dst)
 
     if (src->ele_type != dst->ele_type)
     {
-        ERROR_LOG("Invalid input to array_copy: arrays must have matching types");
+        ERROR_LOG(
+            "Invalid input to array_copy: arrays must have matching types");
         return_status = ERROR_INVALID_INPUT;
         goto EXIT;
     }

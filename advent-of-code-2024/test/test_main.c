@@ -3,6 +3,7 @@
 #include "day_2.h"
 #include "day_3.h"
 #include "day_4.h"
+#include "day_5.h"
 
 #include <CUnit/Basic.h>
 #include <stdio.h>
@@ -23,6 +24,7 @@ static void test_one(void);
 static void test_two(void);
 static void test_three(void);
 static void test_four(void);
+static void test_five(void);
 
 /**
  * @brief Main function to initialize and execute CUnit tests.
@@ -70,6 +72,11 @@ main (void)
     if (NULL == CU_add_test(suite, "test_four", test_four))
     {
         ERROR_LOG("Failed CU_add_test: unable to add test_four");
+    }
+
+    if (NULL == CU_add_test(suite, "test_five", test_five))
+    {
+        ERROR_LOG("Failed CU_add_test: unable to add test_five");
     }
 
     retval = CU_basic_run_tests();
@@ -141,6 +148,20 @@ test_four (void)
     int actual_result[]   = { 0, 0 };  /**< Array to store actual results */
 
     CU_ASSERT_EQUAL_FATAL(day_4("data/example_4.txt", actual_result), 0);
+    CU_ASSERT_EQUAL_FATAL(actual_result[0], expected_result[0]);
+    CU_ASSERT_EQUAL_FATAL(actual_result[1], expected_result[1]);
+}
+
+/**
+ * @brief Test case for validating the functionality of the `day_5` function.
+ */
+static void
+test_five (void)
+{
+    int expected_result[] = { 143, 0 }; /**< Expected results for comparison */
+    int actual_result[]   = { 0, 0 };   /**< Array to store actual results */
+
+    CU_ASSERT_EQUAL_FATAL(day_5("data/example_5.txt", actual_result), 0);
     CU_ASSERT_EQUAL_FATAL(actual_result[0], expected_result[0]);
     CU_ASSERT_EQUAL_FATAL(actual_result[1], expected_result[1]);
 }

@@ -20,7 +20,8 @@ table_initialization (ElementType ele_type, int num_rows)
 
     if (0 >= num_rows)
     {
-        ERROR_LOG("Invalid input to table_initialization: out of bounds num_rows.");
+        ERROR_LOG(
+            "Invalid input to table_initialization: out of bounds num_rows.");
         goto EXIT;
     }
 
@@ -85,12 +86,14 @@ table_add_element (Table *table, int row, const void *ele)
 
     if ((NULL == table) || (NULL == ele))
     {
-        ERROR_LOG("Invalid input to table_add_element: one or more inputs are NULL.");
+        ERROR_LOG(
+            "Invalid input to table_add_element: one or more inputs are NULL.");
         return_status = ERROR_NULL_POINTER;
     }
     else if ((0 > row) || (table->num_rows <= row))
     {
-        ERROR_LOG("Invalid input to table_add_elemenet: row index out of bounds.");
+        ERROR_LOG(
+            "Invalid input to table_add_elemenet: row index out of bounds.");
         return_status = ERROR_INDEX_OUT_OF_BOUNDS;
     }
     else

@@ -59,7 +59,8 @@ day_3 (const char *filename, int result[2])
 
     if (NULL == data)
     {
-        ERROR_LOG("Failed patterndata_initialization: unable to allocate memory");
+        ERROR_LOG(
+            "Failed patterndata_initialization: unable to allocate memory");
         return_status = ERROR_OUT_OF_MEMORY;
         goto EXIT;
     }
@@ -111,7 +112,8 @@ find_pattern (const char *input, PatternData *data)
 {
     if ((NULL == input) || (NULL == data))
     {
-        ERROR_LOG("Invalid input to find_pattern: one or more inputs are NULL.");
+        ERROR_LOG(
+            "Invalid input to find_pattern: one or more inputs are NULL.");
         return;
     }
 
