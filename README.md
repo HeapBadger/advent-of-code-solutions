@@ -1,24 +1,33 @@
-# Advent of Code Challenges
+# 🎄 Advent of Code Solutions
 
 ![Build Status](https://github.com/h3r0toz3r0/adventofcode/actions/workflows/ci.yml/badge.svg)
 
-This repository contains my solutions to the Advent of Code challenges. Each year has its own directory, organized for the respective programming language used for that year's solutions.
+This repository contains my solutions to the **Advent of Code** programming challenges — a series of daily puzzles released each December. Each year's solutions are implemented in a consistent, testable format and organized by year.
 
-## Repository Structure
+## 📁 Repository Structure
 
 The repository is organized as follows:
 
 ```
 adventofcode/
-|- advent-of-code-2024/         # Year directory
-  |- src/                       # Source files for solutions
-  |- include/                   # Header files
-  |- tests/                     # Unit tests for solutions
-  |- Makefile                   # Makefile to build and test solutions
+│
+├── advent-of-code-2025/
+│   ├── ...   
+│   └── README.md       # Instructions and notes specific to the year
+│
+├── advent-of-code-2024/
+│   ├── ...   
+│   └── README.md       # Instructions and notes specific to the year
+│
+└── README.md
 ```
 
-## Usage
+## 🛠️ Usage
 
-Navigate to the directory for the specific year to access the solutions and usage instructions.
+Each year is self-contained and has its own build/test system. Navigate to the specific year for instructions.
 
-Each year also contains its own set of unit tests, which are automatically run in GitHub's runner.
+## 🚀 Continuous Integration
+
+Each directory supports GitHub Actions for CI. Unit tests are automatically executed on push and pull requests to ensure correctness.
+
+
