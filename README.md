@@ -1,6 +1,6 @@
 # 🎄 Advent of Code Solutions
 
-![Build Status](https://github.com/h3r0toz3r0/adventofcode/actions/workflows/ci.yml/badge.svg)
+![Build Status](https://github.com/HeapBadger/adventofcode/actions/workflows/ci.yml/badge.svg)
 
 This repository contains my solutions to the **Advent of Code** programming challenges — a series of daily puzzles released each December. Each year's solutions are implemented in a consistent, testable format and organized by year.
 
